@@ -110,8 +110,8 @@
     <div class="bg-white rounded-lg shadow-sm p-6">
         <h3 class="text-lg font-medium text-gray-900 mb-4">Quick Actions</h3>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <a href="{{ route('apipt.dashboard') }}?tab=api-progress" 
-               class="flex items-center p-4 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors">
+            <a href="{{ route('apipt.dashboard') }}?tab=api-progress"
+                class="flex items-center p-4 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors">
                 <i class="fas fa-code-branch text-blue-600 text-2xl mr-4"></i>
                 <div>
                     <p class="font-medium text-gray-900">Manage APIs</p>
@@ -119,8 +119,8 @@
                 </div>
             </a>
 
-            <a href="{{ route('apipt.dashboard') }}?tab=tasks" 
-               class="flex items-center p-4 bg-green-50 rounded-lg hover:bg-green-100 transition-colors">
+            <a href="{{ route('apipt.dashboard') }}?tab=tasks"
+                class="flex items-center p-4 bg-green-50 rounded-lg hover:bg-green-100 transition-colors">
                 <i class="fas fa-tasks text-green-600 text-2xl mr-4"></i>
                 <div>
                     <p class="font-medium text-gray-900">Manage Tasks</p>
@@ -128,8 +128,8 @@
                 </div>
             </a>
 
-            <a href="{{ route('apipt.dashboard') }}?tab=developers" 
-               class="flex items-center p-4 bg-purple-50 rounded-lg hover:bg-purple-100 transition-colors">
+            <a href="{{ route('apipt.dashboard') }}?tab=developers"
+                class="flex items-center p-4 bg-purple-50 rounded-lg hover:bg-purple-100 transition-colors">
                 <i class="fas fa-users text-purple-600 text-2xl mr-4"></i>
                 <div>
                     <p class="font-medium text-gray-900">Manage Team</p>
@@ -141,115 +141,115 @@
 </div>
 
 @push('scripts')
-<script>
-function dashboardData() {
-    return {
-        stats: {
-            totalApis: 0,
-            completedApis: 0,
-            inProgressApis: 0,
-            activeTasks: 0
-        },
-        recentActivity: [],
-        progressChart: null,
-        priorityChart: null,
-
-        async init() {
-            await this.loadStats();
-            await this.loadRecentActivity();
-            this.initCharts();
-        },
-
-        async loadStats() {
-            try {
-                const response = await fetch('{{ route("apipt.api.stats") }}');
-                const data = await response.json();
-                
-                if (data.success) {
-                    this.stats = data.data;
-                }
-            } catch (error) {
-                console.error('Error loading stats:', error);
-            }
-        },
-
-        async loadRecentActivity() {
-            try {
-                // Load recent activity (this would need a new endpoint)
-                this.recentActivity = [
-                    {
-                        id: 1,
-                        description: 'API endpoint /api/users was marked as complete',
-                        created_at: '2 hours ago'
-                    },
-                    {
-                        id: 2,
-                        description: 'New task "Implement authentication" was created',
-                        created_at: '4 hours ago'
-                    }
-                ];
-            } catch (error) {
-                console.error('Error loading recent activity:', error);
-            }
-        },
-
-        initCharts() {
-            // Progress Chart
-            const progressCtx = document.getElementById('progressChart').getContext('2d');
-            this.progressChart = new Chart(progressCtx, {
-                type: 'doughnut',
-                data: {
-                    labels: ['Todo', 'In Progress', 'Complete'],
-                    datasets: [{
-                        data: [
-                            this.stats.totalApis - this.stats.completedApis - this.stats.inProgressApis,
-                            this.stats.inProgressApis,
-                            this.stats.completedApis
-                        ],
-                        backgroundColor: ['#ef4444', '#f59e0b', '#10b981'],
-                        borderWidth: 0
-                    }]
+    <script>
+        function dashboardData() {
+            return {
+                stats: {
+                    totalApis: 0,
+                    completedApis: 0,
+                    inProgressApis: 0,
+                    activeTasks: 0
                 },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            position: 'bottom',
-                        }
-                    }
-                }
-            });
+                recentActivity: [],
+                progressChart: null,
+                priorityChart: null,
 
-            // Priority Chart
-            const priorityCtx = document.getElementById('priorityChart').getContext('2d');
-            this.priorityChart = new Chart(priorityCtx, {
-                type: 'bar',
-                data: {
-                    labels: ['Low', 'Medium', 'High', 'Urgent'],
-                    datasets: [{
-                        label: 'APIs by Priority',
-                        data: [0, 0, 0, 0], // This would be loaded from API
-                        backgroundColor: ['#10b981', '#3b82f6', '#f59e0b', '#ef4444']
-                    }]
+                async init() {
+                    await this.loadStats();
+                    await this.loadRecentActivity();
+                    this.initCharts();
                 },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            display: false
+
+                async loadStats() {
+                    try {
+                        const response = await fetch('{{ route('apipt.api.stats') }}');
+                        const data = await response.json();
+
+                        if (data.success) {
+                            this.stats = data.data;
                         }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true
-                        }
+                    } catch (error) {
+                        console.error('Error loading stats:', error);
                     }
+                },
+
+                async loadRecentActivity() {
+                    try {
+                        // Load recent activity (this would need a new endpoint)
+                        this.recentActivity = [{
+                                id: 1,
+                                description: 'API endpoint /api/users was marked as complete',
+                                created_at: '2 hours ago'
+                            },
+                            {
+                                id: 2,
+                                description: 'New task "Implement authentication" was created',
+                                created_at: '4 hours ago'
+                            }
+                        ];
+                    } catch (error) {
+                        console.error('Error loading recent activity:', error);
+                    }
+                },
+
+                initCharts() {
+                    // Progress Chart
+                    const progressCtx = document.getElementById('progressChart').getContext('2d');
+                    this.progressChart = new Chart(progressCtx, {
+                        type: 'doughnut',
+                        data: {
+                            labels: ['Todo', 'In Progress', 'Complete'],
+                            datasets: [{
+                                data: [
+                                    this.stats.totalApis - this.stats.completedApis - this.stats
+                                    .inProgressApis,
+                                    this.stats.inProgressApis,
+                                    this.stats.completedApis
+                                ],
+                                backgroundColor: ['#ef4444', '#f59e0b', '#10b981'],
+                                borderWidth: 0
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: {
+                                    position: 'bottom',
+                                }
+                            }
+                        }
+                    });
+
+                    // Priority Chart
+                    const priorityCtx = document.getElementById('priorityChart').getContext('2d');
+                    this.priorityChart = new Chart(priorityCtx, {
+                        type: 'bar',
+                        data: {
+                            labels: ['Low', 'Medium', 'High', 'Urgent'],
+                            datasets: [{
+                                label: 'APIs by Priority',
+                                data: [0, 0, 0, 0], // This would be loaded from API
+                                backgroundColor: ['#10b981', '#3b82f6', '#f59e0b', '#ef4444']
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: {
+                                    display: false
+                                }
+                            },
+                            scales: {
+                                y: {
+                                    beginAtZero: true
+                                }
+                            }
+                        }
+                    });
                 }
-            });
+            }
         }
-    }
-}
-</script>
+    </script>
 @endpush

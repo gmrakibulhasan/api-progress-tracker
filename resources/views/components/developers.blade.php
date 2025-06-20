@@ -6,8 +6,8 @@
             <h2 class="text-2xl font-bold text-gray-900">Developers</h2>
             <p class="text-gray-600">Manage team members and their access</p>
         </div>
-        <button @click="openAddModal()" 
-                class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center">
+        <button @click="openAddModal()"
+            class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center">
             <i class="fas fa-plus mr-2"></i>
             Add Developer
         </button>
@@ -21,17 +21,14 @@
                     <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                         <i class="fas fa-search text-gray-400"></i>
                     </div>
-                    <input type="text" 
-                           x-model="searchTerm" 
-                           @input="searchDevelopers()"
-                           placeholder="Search developers..." 
-                           class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    <input type="text" x-model="searchTerm" @input="searchDevelopers()"
+                        placeholder="Search developers..."
+                        class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                 </div>
             </div>
             <div class="flex items-center space-x-4">
                 <span class="text-sm text-gray-600" x-text="`${developers.length} developer(s)`"></span>
-                <button @click="loadDevelopers()" 
-                        class="text-blue-600 hover:text-blue-800 flex items-center text-sm">
+                <button @click="loadDevelopers()" class="text-blue-600 hover:text-blue-800 flex items-center text-sm">
                     <i class="fas fa-refresh mr-1"></i>
                     Refresh
                 </button>
@@ -54,17 +51,15 @@
                         </div>
                     </div>
                     <div class="flex items-center space-x-2">
-                        <button @click="editDeveloper(developer)" 
-                                class="text-blue-600 hover:text-blue-800 p-1">
+                        <button @click="editDeveloper(developer)" class="text-blue-600 hover:text-blue-800 p-1">
                             <i class="fas fa-edit"></i>
                         </button>
-                        <button @click="deleteDeveloper(developer)" 
-                                class="text-red-600 hover:text-red-800 p-1">
+                        <button @click="deleteDeveloper(developer)" class="text-red-600 hover:text-red-800 p-1">
                             <i class="fas fa-trash"></i>
                         </button>
                     </div>
                 </div>
-                
+
                 <div class="border-t pt-4">
                     <div class="flex justify-between text-sm">
                         <span class="text-gray-600">Joined:</span>
@@ -89,29 +84,24 @@
         <i class="fas fa-users text-gray-400 text-6xl mb-4"></i>
         <h3 class="text-lg font-medium text-gray-900 mb-2">No developers found</h3>
         <p class="text-gray-600 mb-4">Get started by adding your first team member</p>
-        <button @click="openAddModal()" 
-                class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg">
+        <button @click="openAddModal()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg">
             Add Developer
         </button>
     </div>
 </div>
 
 <!-- Add/Edit Developer Modal -->
-<div x-show="showModal" 
-     x-transition:enter="transition ease-out duration-300"
-     x-transition:enter-start="opacity-0"
-     x-transition:enter-end="opacity-100"
-     x-transition:leave="transition ease-in duration-200"
-     x-transition:leave-start="opacity-100"
-     x-transition:leave-end="opacity-0"
-     class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50"
-     style="display: none;">
-    
+<div x-show="showModal" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0"
+    x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-200"
+    x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"
+    class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50" style="display: none;">
+
     <div class="relative top-20 mx-auto p-5 border w-11/12 md:w-3/4 lg:w-1/2 xl:w-1/3 shadow-lg rounded-md bg-white">
         <div class="mt-3">
             <!-- Modal Header -->
             <div class="flex items-center justify-between pb-4 border-b">
-                <h3 class="text-lg font-medium text-gray-900" x-text="editingDeveloper ? 'Edit Developer' : 'Add Developer'"></h3>
+                <h3 class="text-lg font-medium text-gray-900"
+                    x-text="editingDeveloper ? 'Edit Developer' : 'Add Developer'"></h3>
                 <button @click="closeModal()" class="text-gray-400 hover:text-gray-600">
                     <i class="fas fa-times"></i>
                 </button>
@@ -121,31 +111,23 @@
             <form @submit.prevent="saveDeveloper()" class="mt-6 space-y-4">
                 <div>
                     <label for="name" class="block text-sm font-medium text-gray-700 mb-2">Name</label>
-                    <input type="text" 
-                           id="name" 
-                           x-model="form.name" 
-                           required 
-                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    <input type="text" id="name" x-model="form.name" required
+                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                 </div>
 
                 <div>
                     <label for="email" class="block text-sm font-medium text-gray-700 mb-2">Email</label>
-                    <input type="email" 
-                           id="email" 
-                           x-model="form.email" 
-                           required 
-                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    <input type="email" id="email" x-model="form.email" required
+                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                 </div>
 
                 <div>
                     <label for="password" class="block text-sm font-medium text-gray-700 mb-2">
-                        Password <span x-show="editingDeveloper" class="text-gray-500">(leave empty to keep current)</span>
+                        Password <span x-show="editingDeveloper" class="text-gray-500">(leave empty to keep
+                            current)</span>
                     </label>
-                    <input type="password" 
-                           id="password" 
-                           x-model="form.password" 
-                           :required="!editingDeveloper"
-                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    <input type="password" id="password" x-model="form.password" :required="!editingDeveloper"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                 </div>
 
                 <!-- Error Messages -->
@@ -157,14 +139,12 @@
 
                 <!-- Modal Footer -->
                 <div class="flex justify-end space-x-3 pt-4 border-t">
-                    <button type="button" 
-                            @click="closeModal()" 
-                            class="px-4 py-2 text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg">
+                    <button type="button" @click="closeModal()"
+                        class="px-4 py-2 text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg">
                         Cancel
                     </button>
-                    <button type="submit" 
-                            :disabled="saving"
-                            class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg disabled:opacity-50">
+                    <button type="submit" :disabled="saving"
+                        class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg disabled:opacity-50">
                         <span x-show="!saving" x-text="editingDeveloper ? 'Update' : 'Create'"></span>
                         <span x-show="saving">Saving...</span>
                     </button>
@@ -175,166 +155,179 @@
 </div>
 
 @push('scripts')
-<script>
-function developersData() {
-    return {
-        developers: [],
-        filteredDevelopers: [],
-        loading: false,
-        searchTerm: '',
-        showModal: false,
-        editingDeveloper: null,
-        saving: false,
-        errors: [],
-        form: {
-            name: '',
-            email: '',
-            password: ''
-        },
+    <script>
+        function developersData() {
+            return {
+                developers: [],
+                filteredDevelopers: [],
+                loading: false,
+                searchTerm: '',
+                showModal: false,
+                editingDeveloper: null,
+                saving: false,
+                errors: [],
+                form: {
+                    name: '',
+                    email: '',
+                    password: ''
+                },
 
-        async init() {
-            await this.loadDevelopers();
-        },
-
-        async loadDevelopers() {
-            this.loading = true;
-            try {
-                const response = await fetch('{{ route("apipt.api.developers") }}');
-                const data = await response.json();
-                
-                if (data.data) {
-                    this.developers = data.data;
-                    this.filteredDevelopers = [...this.developers];
-                }
-            } catch (error) {
-                console.error('Error loading developers:', error);
-            } finally {
-                this.loading = false;
-            }
-        },
-
-        searchDevelopers() {
-            if (this.searchTerm.trim() === '') {
-                this.filteredDevelopers = [...this.developers];
-            } else {
-                const term = this.searchTerm.toLowerCase();
-                this.filteredDevelopers = this.developers.filter(dev => 
-                    dev.name.toLowerCase().includes(term) || 
-                    dev.email.toLowerCase().includes(term)
-                );
-            }
-        },
-
-        openAddModal() {
-            this.editingDeveloper = null;
-            this.form = { name: '', email: '', password: '' };
-            this.errors = [];
-            this.showModal = true;
-        },
-
-        editDeveloper(developer) {
-            this.editingDeveloper = developer;
-            this.form = {
-                name: developer.name,
-                email: developer.email,
-                password: ''
-            };
-            this.errors = [];
-            this.showModal = true;
-        },
-
-        closeModal() {
-            this.showModal = false;
-            this.editingDeveloper = null;
-            this.form = { name: '', email: '', password: '' };
-            this.errors = [];
-        },
-
-        async saveDeveloper() {
-            this.saving = true;
-            this.errors = [];
-
-            try {
-                const url = this.editingDeveloper 
-                    ? `{{ route("apipt.api.developers.store") }}`.replace('/developers', `/developers/${this.editingDeveloper.id}`)
-                    : '{{ route("apipt.api.developers.store") }}';
-                
-                const method = this.editingDeveloper ? 'PUT' : 'POST';
-
-                const response = await fetch(url, {
-                    method: method,
-                    headers: {
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(this.form)
-                });
-
-                const data = await response.json();
-
-                if (data.success) {
-                    this.closeModal();
+                async init() {
                     await this.loadDevelopers();
-                    this.showNotification(
-                        this.editingDeveloper ? 'Developer updated successfully' : 'Developer created successfully', 
-                        'success'
-                    );
-                } else {
-                    if (data.errors) {
-                        this.errors = Object.values(data.errors).flat();
+                },
+
+                async loadDevelopers() {
+                    this.loading = true;
+                    try {
+                        const response = await fetch('{{ route('apipt.api.developers') }}');
+                        const data = await response.json();
+
+                        if (data.data) {
+                            this.developers = data.data;
+                            this.filteredDevelopers = [...this.developers];
+                        }
+                    } catch (error) {
+                        console.error('Error loading developers:', error);
+                    } finally {
+                        this.loading = false;
+                    }
+                },
+
+                searchDevelopers() {
+                    if (this.searchTerm.trim() === '') {
+                        this.filteredDevelopers = [...this.developers];
                     } else {
-                        this.errors = [data.message || 'An error occurred'];
+                        const term = this.searchTerm.toLowerCase();
+                        this.filteredDevelopers = this.developers.filter(dev =>
+                            dev.name.toLowerCase().includes(term) ||
+                            dev.email.toLowerCase().includes(term)
+                        );
+                    }
+                },
+
+                openAddModal() {
+                    this.editingDeveloper = null;
+                    this.form = {
+                        name: '',
+                        email: '',
+                        password: ''
+                    };
+                    this.errors = [];
+                    this.showModal = true;
+                },
+
+                editDeveloper(developer) {
+                    this.editingDeveloper = developer;
+                    this.form = {
+                        name: developer.name,
+                        email: developer.email,
+                        password: ''
+                    };
+                    this.errors = [];
+                    this.showModal = true;
+                },
+
+                closeModal() {
+                    this.showModal = false;
+                    this.editingDeveloper = null;
+                    this.form = {
+                        name: '',
+                        email: '',
+                        password: ''
+                    };
+                    this.errors = [];
+                },
+
+                async saveDeveloper() {
+                    this.saving = true;
+                    this.errors = [];
+
+                    try {
+                        const url = this.editingDeveloper ?
+                            `{{ route('apipt.api.developers.store') }}`.replace('/developers',
+                                `/developers/${this.editingDeveloper.id}`) :
+                            '{{ route('apipt.api.developers.store') }}';
+
+                        const method = this.editingDeveloper ? 'PUT' : 'POST';
+
+                        const response = await fetch(url, {
+                            method: method,
+                            headers: {
+                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute(
+                                    'content'),
+                                'Accept': 'application/json',
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify(this.form)
+                        });
+
+                        const data = await response.json();
+
+                        if (data.success) {
+                            this.closeModal();
+                            await this.loadDevelopers();
+                            this.showNotification(
+                                this.editingDeveloper ? 'Developer updated successfully' :
+                                'Developer created successfully',
+                                'success'
+                            );
+                        } else {
+                            if (data.errors) {
+                                this.errors = Object.values(data.errors).flat();
+                            } else {
+                                this.errors = [data.message || 'An error occurred'];
+                            }
+                        }
+                    } catch (error) {
+                        console.error('Error saving developer:', error);
+                        this.errors = ['An error occurred while saving'];
+                    } finally {
+                        this.saving = false;
+                    }
+                },
+
+                async deleteDeveloper(developer) {
+                    if (!confirm(`Are you sure you want to delete ${developer.name}?`)) {
+                        return;
+                    }
+
+                    try {
+                        const response = await fetch(`{{ route('apipt.api.developers.store') }}`.replace('/developers',
+                            `/developers/${developer.id}`), {
+                            method: 'DELETE',
+                            headers: {
+                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute(
+                                    'content'),
+                                'Accept': 'application/json'
+                            }
+                        });
+
+                        const data = await response.json();
+
+                        if (data.success) {
+                            await this.loadDevelopers();
+                            this.showNotification('Developer deleted successfully', 'success');
+                        } else {
+                            this.showNotification(data.message || 'Error deleting developer', 'error');
+                        }
+                    } catch (error) {
+                        console.error('Error deleting developer:', error);
+                        this.showNotification('Error deleting developer', 'error');
+                    }
+                },
+
+                formatDate(dateString) {
+                    const date = new Date(dateString);
+                    return date.toLocaleDateString();
+                },
+
+                showNotification(message, type = 'info') {
+                    // Use the global notification system
+                    if (window.mainAppInstance) {
+                        window.mainAppInstance.showNotification(message, type);
                     }
                 }
-            } catch (error) {
-                console.error('Error saving developer:', error);
-                this.errors = ['An error occurred while saving'];
-            } finally {
-                this.saving = false;
-            }
-        },
-
-        async deleteDeveloper(developer) {
-            if (!confirm(`Are you sure you want to delete ${developer.name}?`)) {
-                return;
-            }
-
-            try {
-                const response = await fetch(`{{ route("apipt.api.developers.store") }}`.replace('/developers', `/developers/${developer.id}`), {
-                    method: 'DELETE',
-                    headers: {
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-                        'Accept': 'application/json'
-                    }
-                });
-
-                const data = await response.json();
-
-                if (data.success) {
-                    await this.loadDevelopers();
-                    this.showNotification('Developer deleted successfully', 'success');
-                } else {
-                    this.showNotification(data.message || 'Error deleting developer', 'error');
-                }
-            } catch (error) {
-                console.error('Error deleting developer:', error);
-                this.showNotification('Error deleting developer', 'error');
-            }
-        },
-
-        formatDate(dateString) {
-            const date = new Date(dateString);
-            return date.toLocaleDateString();
-        },
-
-        showNotification(message, type = 'info') {
-            // Use the global notification system
-            if (window.mainAppInstance) {
-                window.mainAppInstance.showNotification(message, type);
             }
         }
-    }
-}
-</script>
+    </script>
 @endpush

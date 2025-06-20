@@ -26,6 +26,30 @@ class ApiProgressController
         return redirect()->route('apipt.dashboard')->with('message', 'Logged out successfully');
     }
 
+    public function login(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email',
+            'password' => 'required|string',
+        ]);
+
+        $developer = ApiptDeveloper::where('email', $request->email)->first();
+
+        if ($developer && Hash::check($request->password, $developer->password)) {
+            $request->session()->put([
+                'apipt_user_id' => $developer->id,
+                'apipt_user_name' => $developer->name,
+                'apipt_user_email' => $developer->email,
+            ]);
+
+            return redirect()->route('apipt.dashboard');
+        }
+
+        return back()->withErrors([
+            'credentials' => 'Invalid email or password.'
+        ])->withInput($request->only('email'));
+    }
+
     // Developer Management
     public function getDevelopers(Request $request): JsonResponse
     {
@@ -440,7 +464,7 @@ class ApiProgressController
     {
         $totalApis = ApiptApiProgress::count();
         if ($totalApis === 0) return 0;
-        
+
         $completedApis = ApiptApiProgress::where('status', 'complete')->count();
         return (int) round(($completedApis / $totalApis) * 100);
     }
