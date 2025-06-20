@@ -1,9 +1,9 @@
 <?php return array(
     'root' => array(
         'name' => 'gmrakibulhasan/api-progress-tracker',
-        'pretty_version' => '1.0.0',
-        'version' => '1.0.0.0',
-        'reference' => null,
+        'pretty_version' => 'dev-main',
+        'version' => 'dev-main',
+        'reference' => 'fec7441d3c6b31a5899fb1b5c9bcad44725d5cca',
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -122,9 +122,9 @@
             'dev_requirement' => false,
         ),
         'gmrakibulhasan/api-progress-tracker' => array(
-            'pretty_version' => '1.0.0',
-            'version' => '1.0.0.0',
-            'reference' => null,
+            'pretty_version' => 'dev-main',
+            'version' => 'dev-main',
+            'reference' => 'fec7441d3c6b31a5899fb1b5c9bcad44725d5cca',
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),

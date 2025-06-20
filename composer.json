@@ -2,7 +2,6 @@
     "name": "gmrakibulhasan/api-progress-tracker",
     "description": "A professional Laravel package for tracking API development progress with task management and team collaboration",
     "type": "library",
-    "version": "1.0.5",
     "license": "MIT",
     "keywords": ["laravel", "api", "progress", "tracker", "task", "management", "livewire", "dashboard"],
     "homepage": "https://github.com/gmrakibulhasan/api-progress-tracker",

@@ -7,6 +7,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\View\View;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Artisan;
 use Gmrakibulhasan\ApiProgressTracker\Models\ApiptDeveloper;
 use Gmrakibulhasan\ApiProgressTracker\Models\ApiptApiProgress;
 use Gmrakibulhasan\ApiProgressTracker\Models\ApiptTask;
@@ -17,6 +18,12 @@ class ApiProgressController
     public function index(): View
     {
         return view('api-progress-tracker::dashboard');
+    }
+
+    public function logout(Request $request)
+    {
+        $request->session()->forget(['apipt_user_id', 'apipt_user_name']);
+        return redirect()->route('apipt.dashboard')->with('message', 'Logged out successfully');
     }
 
     // Developer Management
@@ -98,7 +105,8 @@ class ApiProgressController
     // API Progress Management
     public function getApiProgress(Request $request): JsonResponse
     {
-        $query = ApiptApiProgress::with(['developers', 'assignedBy']);
+        $query = ApiptApiProgress::withCount('comments')
+            ->with(['developers', 'assignedBy']);
 
         // Filters
         if ($request->has('status')) {
@@ -364,49 +372,76 @@ class ApiProgressController
     // Statistics
     public function getStatistics(): JsonResponse
     {
+        $totalApis = ApiptApiProgress::count();
+        $completedApis = ApiptApiProgress::where('status', 'complete')->count();
+        $inProgressApis = ApiptApiProgress::where('status', 'in_progress')->count();
+        $activeTasks = ApiptTask::whereIn('status', ['todo', 'in_progress'])->count();
+
         $stats = [
-            'developers' => [
-                'total' => ApiptDeveloper::count(),
-                'active' => ApiptDeveloper::whereHas('apiProgresses', function ($q) {
-                    $q->where('status', '!=', 'complete');
-                })->count(),
-            ],
-            'api_progress' => [
-                'total' => ApiptApiProgress::count(),
-                'by_status' => ApiptApiProgress::selectRaw('status, COUNT(*) as count')
-                    ->groupBy('status')
-                    ->pluck('count', 'status')
-                    ->toArray(),
-                'by_priority' => ApiptApiProgress::selectRaw('priority, COUNT(*) as count')
-                    ->groupBy('priority')
-                    ->pluck('count', 'priority')
-                    ->toArray(),
-                'by_group' => ApiptApiProgress::selectRaw('group_name, COUNT(*) as count')
-                    ->whereNotNull('group_name')
-                    ->groupBy('group_name')
-                    ->pluck('count', 'group_name')
-                    ->toArray(),
-            ],
-            'tasks' => [
-                'total' => ApiptTask::count(),
-                'by_status' => ApiptTask::selectRaw('status, COUNT(*) as count')
-                    ->groupBy('status')
-                    ->pluck('count', 'status')
-                    ->toArray(),
-                'by_priority' => ApiptTask::selectRaw('priority, COUNT(*) as count')
-                    ->groupBy('priority')
-                    ->pluck('count', 'priority')
-                    ->toArray(),
-            ],
-            'comments' => [
-                'total' => ApiptComment::count(),
-                'recent' => ApiptComment::with('developer')
-                    ->latest()
-                    ->limit(5)
-                    ->get(),
-            ],
+            'totalApis' => $totalApis,
+            'completedApis' => $completedApis,
+            'inProgressApis' => $inProgressApis,
+            'activeTasks' => $activeTasks,
+            'completionPercentage' => $totalApis > 0 ? round(($completedApis / $totalApis) * 100) : 0,
+        ];
+
+        return response()->json([
+            'success' => true,
+            'data' => $stats
+        ]);
+    }
+
+    /**
+     * Sync API routes
+     */
+    public function syncRoutes(): JsonResponse
+    {
+        try {
+            Artisan::call('api-progress:sync-routes');
+            return response()->json([
+                'success' => true,
+                'message' => 'Routes synced successfully'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error syncing routes: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Get simplified statistics for dashboard
+     */
+    public function getDashboardStats(): JsonResponse
+    {
+        $stats = [
+            'developers' => ApiptDeveloper::count(),
+            'apis' => ApiptApiProgress::count(),
+            'tasks' => ApiptTask::count(),
+            'completion' => $this->calculateCompletionPercentage(),
+            'api_status' => ApiptApiProgress::selectRaw('status, COUNT(*) as count')
+                ->groupBy('status')
+                ->pluck('count', 'status')
+                ->toArray(),
+            'api_priority' => ApiptApiProgress::selectRaw('priority, COUNT(*) as count')
+                ->groupBy('priority')
+                ->pluck('count', 'priority')
+                ->toArray(),
         ];
 
         return response()->json($stats);
+    }
+
+    /**
+     * Calculate overall completion percentage
+     */
+    private function calculateCompletionPercentage(): int
+    {
+        $totalApis = ApiptApiProgress::count();
+        if ($totalApis === 0) return 0;
+        
+        $completedApis = ApiptApiProgress::where('status', 'complete')->count();
+        return (int) round(($completedApis / $totalApis) * 100);
     }
 }

@@ -20,6 +20,9 @@ class ApiProgressTrackerServiceProvider extends ServiceProvider
     }
     public function boot()
     {
+        // Register middleware
+        $this->app['router']->aliasMiddleware('apipt.auth', \Gmrakibulhasan\ApiProgressTracker\Http\Middleware\ApiProgressAuthMiddleware::class);
+
         // Note: Migrations are NOT auto-loaded to prevent conflicts with main app migrations
         // Users must run: php artisan api-progress:migrate
 

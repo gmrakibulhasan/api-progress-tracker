@@ -4,15 +4,24 @@ use Illuminate\Support\Facades\Route;
 use Gmrakibulhasan\ApiProgressTracker\Http\Controllers\ApiProgressController;
 
 Route::prefix(config('api-progress-tracker.route.prefix', 'api-progress'))
-    ->middleware(config('api-progress-tracker.route.middleware', ['web']))
+    ->middleware(array_merge(config('api-progress-tracker.route.middleware', ['web']), ['apipt.auth']))
     ->name(config('api-progress-tracker.route.name', 'apipt.'))
     ->group(function () {
 
         // Main dashboard route
         Route::get('/', [ApiProgressController::class, 'index'])->name('dashboard');
 
+        // Authentication routes
+        Route::post('/logout', [ApiProgressController::class, 'logout'])->name('logout');
+
         // API endpoints for AJAX requests
         Route::prefix('api')->group(function () {
+
+            // Sync routes
+            Route::post('sync-routes', [ApiProgressController::class, 'syncRoutes'])->name('api.sync-routes');
+
+            // Dashboard stats
+            Route::get('stats', [ApiProgressController::class, 'getDashboardStats'])->name('api.stats');
 
             // Developers
             Route::get('developers', [ApiProgressController::class, 'getDevelopers'])->name('api.developers');
