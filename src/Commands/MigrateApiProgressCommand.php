@@ -5,6 +5,7 @@ namespace Gmrakibulhasan\ApiProgressTracker\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 
 class MigrateApiProgressCommand extends Command
 {
@@ -67,11 +68,7 @@ class MigrateApiProgressCommand extends Command
             // Run seeder if requested
             if ($this->option('seed')) {
                 $this->info('Seeding database...');
-
-                // Use the seeder class directly
-                $seeder = new \Gmrakibulhasan\ApiProgressTracker\Database\Seeders\ApiProgressTrackerSeeder();
-                $seeder->run();
-
+                $this->runSeeder();
                 $this->info('Database seeded successfully!');
             }
         } catch (\Exception $e) {
@@ -80,5 +77,113 @@ class MigrateApiProgressCommand extends Command
         }
 
         return 0;
+    }
+
+    /**
+     * Run the package seeder manually
+     */
+    private function runSeeder()
+    {
+        try {
+            // Import required models
+            $developerClass = \Gmrakibulhasan\ApiProgressTracker\Models\ApiptDeveloper::class;
+            $apiProgressClass = \Gmrakibulhasan\ApiProgressTracker\Models\ApiptApiProgress::class;
+            $taskClass = \Gmrakibulhasan\ApiProgressTracker\Models\ApiptTask::class;
+
+            // Create sample developers
+            $admin = $developerClass::firstOrCreate(
+                ['email' => 'admin@apipt.com'],
+                [
+                    'name' => 'Admin User',
+                    'password' => Hash::make('password')
+                ]
+            );
+
+            $developer1 = $developerClass::firstOrCreate(
+                ['email' => 'john@example.com'],
+                [
+                    'name' => 'John Doe',
+                    'password' => Hash::make('password')
+                ]
+            );
+
+            $developer2 = $developerClass::firstOrCreate(
+                ['email' => 'jane@example.com'],
+                [
+                    'name' => 'Jane Smith',
+                    'password' => Hash::make('password')
+                ]
+            );
+
+            // Create sample API progress entries
+            $sampleApis = [
+                [
+                    'method' => 'GET',
+                    'endpoint' => '/api/users',
+                    'group_name' => 'User Management',
+                    'description' => 'Get all users',
+                    'priority' => 'high',
+                    'status' => 'complete'
+                ],
+                [
+                    'method' => 'POST',
+                    'endpoint' => '/api/users',
+                    'group_name' => 'User Management',
+                    'description' => 'Create new user',
+                    'priority' => 'high',
+                    'status' => 'in_progress'
+                ],
+                [
+                    'method' => 'GET',
+                    'endpoint' => '/api/products',
+                    'group_name' => 'Product Management',
+                    'description' => 'Get all products',
+                    'priority' => 'medium',
+                    'status' => 'todo'
+                ]
+            ];
+
+            foreach ($sampleApis as $apiData) {
+                $apiProgressClass::firstOrCreate(
+                    ['method' => $apiData['method'], 'endpoint' => $apiData['endpoint']],
+                    $apiData
+                );
+            }
+
+            // Create sample tasks
+            $sampleTasks = [
+                [
+                    'title' => 'Implement user authentication',
+                    'description' => 'Add JWT authentication to the API',
+                    'priority' => 'high',
+                    'status' => 'in_progress',
+                    'assigned_by' => $admin->id
+                ],
+                [
+                    'title' => 'Add input validation',
+                    'description' => 'Implement proper validation for all endpoints',
+                    'priority' => 'medium',
+                    'status' => 'todo',
+                    'assigned_by' => $admin->id
+                ]
+            ];
+
+            foreach ($sampleTasks as $taskData) {
+                $task = $taskClass::firstOrCreate(
+                    ['title' => $taskData['title']],
+                    $taskData
+                );
+
+                // Assign developers to tasks
+                $task->developers()->syncWithoutDetaching([$developer1->id, $developer2->id]);
+            }
+
+            $this->info('✓ Created admin user (admin@apipt.com / password)');
+            $this->info('✓ Created sample developers and API progress entries');
+            $this->info('✓ Created sample tasks with assignments');
+        } catch (\Exception $e) {
+            $this->error('Seeding failed: ' . $e->getMessage());
+            throw $e;
+        }
     }
 }

@@ -6,16 +6,6 @@ echo "Installing API Progress Tracker Package..."
 echo "Installing composer dependencies..."
 composer install
 
-# Setup database (if MySQL is available)
-echo "Setting up database..."
-if command -v mysql &> /dev/null; then
-    mysql -u root -p -e "CREATE DATABASE IF NOT EXISTS api_progress_tracker;"
-    echo "Database created successfully!"
-else
-    echo "MySQL command not found. Please ensure the database exists:"
-    echo "CREATE DATABASE api_progress_tracker;"
-fi
-
 # Run migrations on separate database
 echo "Running migrations on separate database..."
 php artisan api-progress:migrate --fresh --seed
