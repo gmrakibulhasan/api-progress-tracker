@@ -20,6 +20,10 @@ php artisan vendor:publish --provider="Gmrakibulhasan\ApiProgressTracker\ApiProg
 echo "Syncing API routes..."
 php artisan api-progress:sync-routes
 
+# Validate installation
+echo "Validating installation..."
+php artisan api-progress:validate
+
 echo "Installation completed successfully!"
 echo "You can now access the dashboard at: /api-progress"
 echo "Admin login: admin@apipt.com / password"

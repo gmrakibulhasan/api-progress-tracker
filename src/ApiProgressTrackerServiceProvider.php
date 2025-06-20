@@ -34,6 +34,7 @@ class ApiProgressTrackerServiceProvider extends ServiceProvider
             $this->commands([
                 SyncApiRoutesCommand::class,
                 \Gmrakibulhasan\ApiProgressTracker\Commands\MigrateApiProgressCommand::class,
+                \Gmrakibulhasan\ApiProgressTracker\Commands\ValidateInstallationCommand::class,
             ]);
 
             // Publish config
