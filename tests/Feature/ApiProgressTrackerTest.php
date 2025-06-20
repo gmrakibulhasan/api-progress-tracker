@@ -24,6 +24,7 @@ class ApiProgressTrackerTest extends TestCase
 
     protected function getEnvironmentSetUp($app)
     {
+        // Configure testing database for main app
         $app['config']->set('database.default', 'testing');
         $app['config']->set('database.connections.testing', [
             'driver' => 'sqlite',
@@ -31,8 +32,36 @@ class ApiProgressTrackerTest extends TestCase
             'prefix' => '',
         ]);
 
+        // Configure separate testing database for API Progress Tracker
+        $app['config']->set('database.connections.apipt', [
+            'driver' => 'sqlite',
+            'database' => ':memory:',
+            'prefix' => '',
+        ]);
+
+        // Set API Progress Tracker configuration
+        $app['config']->set('api-progress-tracker.database', [
+            'connection' => 'sqlite',
+            'host' => '',
+            'port' => '',
+            'database' => ':memory:',
+            'username' => '',
+            'password' => '',
+        ]);
+
         // Set app key for encryption
         $app['config']->set('app.key', 'base64:' . base64_encode(random_bytes(32)));
+    }
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        // Run package migrations for testing
+        $this->artisan('migrate', [
+            '--database' => 'apipt',
+            '--path' => __DIR__ . '/../../database/migrations',
+        ]);
     }
 
     /** @test */

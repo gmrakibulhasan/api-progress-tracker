@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 class ApiptApiProgress extends Model
 {
+    protected $connection = 'apipt';
     protected $table = 'apipt_api_progress';
 
     protected $fillable = [

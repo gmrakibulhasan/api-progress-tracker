@@ -8,7 +8,7 @@ return new class extends Migration
 {
     public function up()
     {
-        Schema::create('apipt_developer_task', function (Blueprint $table) {
+        Schema::connection('apipt')->create('apipt_developer_task', function (Blueprint $table) {
             $table->id();
             $table->foreignId('developer_id')->constrained('apipt_developers')->cascadeOnDelete();
             $table->foreignId('task_id')->constrained('apipt_tasks')->cascadeOnDelete();
@@ -25,6 +25,6 @@ return new class extends Migration
 
     public function down()
     {
-        Schema::dropIfExists('apipt_developer_task');
+        Schema::connection('apipt')->dropIfExists('apipt_developer_task');
     }
 };

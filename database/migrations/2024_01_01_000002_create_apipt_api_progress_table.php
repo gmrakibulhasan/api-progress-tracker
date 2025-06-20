@@ -8,7 +8,7 @@ return new class extends Migration
 {
     public function up()
     {
-        Schema::create('apipt_api_progress', function (Blueprint $table) {
+        Schema::connection('apipt')->create('apipt_api_progress', function (Blueprint $table) {
             $table->id();
             $table->string('method'); // GET, POST, PUT, DELETE, etc.
             $table->string('endpoint');
@@ -30,6 +30,6 @@ return new class extends Migration
 
     public function down()
     {
-        Schema::dropIfExists('apipt_api_progress');
+        Schema::connection('apipt')->dropIfExists('apipt_api_progress');
     }
 };

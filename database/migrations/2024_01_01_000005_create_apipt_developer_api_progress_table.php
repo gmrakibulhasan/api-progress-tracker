@@ -8,7 +8,7 @@ return new class extends Migration
 {
     public function up()
     {
-        Schema::create('apipt_developer_api_progress', function (Blueprint $table) {
+        Schema::connection('apipt')->create('apipt_developer_api_progress', function (Blueprint $table) {
             $table->id();
             $table->foreignId('developer_id')->constrained('apipt_developers')->cascadeOnDelete();
             $table->foreignId('api_progress_id')->constrained('apipt_api_progress')->cascadeOnDelete();
@@ -27,6 +27,6 @@ return new class extends Migration
 
     public function down()
     {
-        Schema::dropIfExists('apipt_developer_api_progress');
+        Schema::connection('apipt')->dropIfExists('apipt_developer_api_progress');
     }
 };

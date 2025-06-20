@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 class ApiptComment extends Model
 {
+    protected $connection = 'apipt';
     protected $table = 'apipt_comments';
 
     protected $fillable = [

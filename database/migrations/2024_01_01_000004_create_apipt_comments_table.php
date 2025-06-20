@@ -8,7 +8,7 @@ return new class extends Migration
 {
     public function up()
     {
-        Schema::create('apipt_comments', function (Blueprint $table) {
+        Schema::connection('apipt')->create('apipt_comments', function (Blueprint $table) {
             $table->id();
             $table->text('description');
             $table->json('attachments')->nullable(); // Multiple file upload option
@@ -26,6 +26,6 @@ return new class extends Migration
 
     public function down()
     {
-        Schema::dropIfExists('apipt_comments');
+        Schema::connection('apipt')->dropIfExists('apipt_comments');
     }
 };

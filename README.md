@@ -64,14 +64,11 @@ chmod +x vendor/gmrakibulhasan/api-progress-tracker/install.sh
 # Publish configuration
 php artisan vendor:publish --provider="Gmrakibulhasan\ApiProgressTracker\ApiProgressTrackerServiceProvider"
 
-# Run migrations
-php artisan migrate
+# Run migrations on separate database
+php artisan api-progress:migrate --fresh --seed
 
 # Sync API routes
 php artisan api-progress:sync-routes
-
-# Seed sample data (optional)
-php artisan db:seed --class="Gmrakibulhasan\ApiProgressTracker\Database\Seeders\ApiProgressTrackerSeeder"
 ```
 
 ## 🎯 Usage
@@ -84,6 +81,38 @@ Visit: `http://yourapp.com/api-progress`
 
 - Email: `admin@apipt.com`
 - Password: `password`
+
+### Database Management
+
+The package uses a **separate database connection** to isolate its data from your main application. This prevents conflicts and data loss during migrations.
+
+#### Migration Commands
+
+```bash
+# Run migrations on separate database
+php artisan api-progress:migrate
+
+# Fresh migration with seeding
+php artisan api-progress:migrate --fresh --seed
+
+# Fresh migration only
+php artisan api-progress:migrate --fresh
+```
+
+#### Database Configuration
+
+The package automatically creates an `apipt` database connection using your `.env` settings:
+
+```env
+APIPT_DB_CONNECTION=mysql
+APIPT_DB_HOST=127.0.0.1
+APIPT_DB_PORT=3306
+APIPT_DB_DATABASE=api_progress_tracker
+APIPT_DB_USERNAME=root
+APIPT_DB_PASSWORD=
+```
+
+> **Note:** The package migrations will NOT interfere with your main application's `migrate:fresh --seed` commands.
 
 ### Available Commands
 

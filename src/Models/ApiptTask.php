@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 class ApiptTask extends Model
 {
+    protected $connection = 'apipt';
     protected $table = 'apipt_tasks';
 
     protected $fillable = [

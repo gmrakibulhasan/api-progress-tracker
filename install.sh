@@ -10,32 +10,15 @@ composer install
 echo "Setting up database..."
 mysql -u root -p -e "CREATE DATABASE IF NOT EXISTS api_progress_tracker;"
 
-# Run migrations
-echo "Running migrations..."
-php artisan migrate --path=vendor/gmrakibulhasan/api-progress-tracker/database/migrations
+# Run migrations on separate database
+echo "Running migrations on separate database..."
+php artisan api-progress:migrate --fresh --seed
 
 # Publish package assets
 echo "Publishing package assets..."
 php artisan vendor:publish --provider="Gmrakibulhasan\ApiProgressTracker\ApiProgressTrackerServiceProvider" --tag="config"
 php artisan vendor:publish --provider="Gmrakibulhasan\ApiProgressTracker\ApiProgressTrackerServiceProvider" --tag="views"
 php artisan vendor:publish --provider="Gmrakibulhasan\ApiProgressTracker\ApiProgressTrackerServiceProvider" --tag="assets"
-
-# Create initial admin user
-echo "Creating initial admin user..."
-php artisan tinker --execute="
-use Gmrakibulhasan\ApiProgressTracker\Models\ApiptDeveloper;
-use Illuminate\Support\Facades\Hash;
-if (!ApiptDeveloper::where('email', 'admin@apipt.com')->exists()) {
-    ApiptDeveloper::create([
-        'name' => 'Admin User',
-        'email' => 'admin@apipt.com',
-        'password' => Hash::make('password')
-    ]);
-    echo 'Admin user created with email: admin@apipt.com and password: password';
-} else {
-    echo 'Admin user already exists';
-}
-"
 
 # Sync initial routes
 echo "Syncing API routes..."

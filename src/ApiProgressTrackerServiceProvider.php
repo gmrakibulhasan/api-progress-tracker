@@ -14,12 +14,18 @@ class ApiProgressTrackerServiceProvider extends ServiceProvider
             __DIR__ . '/../config/api-progress-tracker.php',
             'api-progress-tracker'
         );
+
+        // Register separate database connection for the package
+        $this->registerDatabaseConnection();
     }
 
     public function boot()
     {
-        // Load migrations
-        $this->loadMigrationsFrom(__DIR__ . '/../database/migrations');
+        // Note: Migrations are NOT auto-loaded to prevent conflicts with main app migrations
+        // Users must run: php artisan api-progress:migrate
+
+        // Set default connection for package models
+        $this->setModelConnections();
 
         // Load routes
         $this->loadRoutesFrom(__DIR__ . '/../routes/web.php');
@@ -31,6 +37,7 @@ class ApiProgressTrackerServiceProvider extends ServiceProvider
         if ($this->app->runningInConsole()) {
             $this->commands([
                 SyncApiRoutesCommand::class,
+                \Gmrakibulhasan\ApiProgressTracker\Commands\MigrateApiProgressCommand::class,
             ]);
 
             // Publish config
@@ -66,5 +73,39 @@ class ApiProgressTrackerServiceProvider extends ServiceProvider
         // Livewire::component('apipt-api-progress', \Gmrakibulhasan\ApiProgressTracker\Livewire\ApiProgressManagement::class);
         // Livewire::component('apipt-task-management', \Gmrakibulhasan\ApiProgressTracker\Livewire\TaskManagement::class);
         // Livewire::component('apipt-comment-system', \Gmrakibulhasan\ApiProgressTracker\Livewire\CommentSystem::class);
+    }
+
+    /**
+     * Register separate database connection for the package
+     */
+    private function registerDatabaseConnection()
+    {
+        $config = config('api-progress-tracker.database');
+
+        config(['database.connections.apipt' => [
+            'driver' => $config['connection'],
+            'host' => $config['host'],
+            'port' => $config['port'],
+            'database' => $config['database'],
+            'username' => $config['username'],
+            'password' => $config['password'],
+            'charset' => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
+            'prefix' => '',
+            'strict' => true,
+            'engine' => null,
+        ]]);
+    }
+
+    /**
+     * Set the database connection for package models
+     */
+    private function setModelConnections()
+    {
+        // Set connection for all package models
+        \Gmrakibulhasan\ApiProgressTracker\Models\ApiptDeveloper::setConnectionName('apipt');
+        \Gmrakibulhasan\ApiProgressTracker\Models\ApiptApiProgress::setConnectionName('apipt');
+        \Gmrakibulhasan\ApiProgressTracker\Models\ApiptTask::setConnectionName('apipt');
+        \Gmrakibulhasan\ApiProgressTracker\Models\ApiptComment::setConnectionName('apipt');
     }
 }

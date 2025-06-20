@@ -8,7 +8,7 @@ return new class extends Migration
 {
     public function up()
     {
-        Schema::create('apipt_tasks', function (Blueprint $table) {
+        Schema::connection('apipt')->create('apipt_tasks', function (Blueprint $table) {
             $table->id();
             $table->string('title');
             $table->text('description')->nullable();
@@ -28,6 +28,6 @@ return new class extends Migration
 
     public function down()
     {
-        Schema::dropIfExists('apipt_tasks');
+        Schema::connection('apipt')->dropIfExists('apipt_tasks');
     }
 };
