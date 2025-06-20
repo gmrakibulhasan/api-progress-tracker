@@ -30,9 +30,9 @@ class ApiProgressTrackerTest extends TestCase
             'database' => ':memory:',
             'prefix' => '',
         ]);
-        
+
         // Set app key for encryption
-        $app['config']->set('app.key', 'base64:'.base64_encode(random_bytes(32)));
+        $app['config']->set('app.key', 'base64:' . base64_encode(random_bytes(32)));
     }
 
     /** @test */
