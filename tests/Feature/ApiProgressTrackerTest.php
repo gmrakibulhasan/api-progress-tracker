@@ -52,16 +52,13 @@ class ApiProgressTrackerTest extends TestCase
         // Set app key for encryption
         $app['config']->set('app.key', 'base64:' . base64_encode(random_bytes(32)));
     }
-
     protected function setUp(): void
     {
         parent::setUp();
 
-        // Run package migrations for testing
-        $this->artisan('migrate', [
-            '--database' => 'apipt',
-            '--path' => __DIR__ . '/../../database/migrations',
-        ]);
+        // Load and run package migrations manually for testing
+        $this->loadMigrationsFrom(__DIR__ . '/../../database/migrations');
+        $this->artisan('migrate', ['--database' => 'apipt']);
     }
 
     /** @test */

@@ -18,14 +18,10 @@ class ApiProgressTrackerServiceProvider extends ServiceProvider
         // Register separate database connection for the package
         $this->registerDatabaseConnection();
     }
-
     public function boot()
     {
         // Note: Migrations are NOT auto-loaded to prevent conflicts with main app migrations
         // Users must run: php artisan api-progress:migrate
-
-        // Set default connection for package models
-        $this->setModelConnections();
 
         // Load routes
         $this->loadRoutesFrom(__DIR__ . '/../routes/web.php');
@@ -95,17 +91,5 @@ class ApiProgressTrackerServiceProvider extends ServiceProvider
             'strict' => true,
             'engine' => null,
         ]]);
-    }
-
-    /**
-     * Set the database connection for package models
-     */
-    private function setModelConnections()
-    {
-        // Set connection for all package models
-        \Gmrakibulhasan\ApiProgressTracker\Models\ApiptDeveloper::setConnectionName('apipt');
-        \Gmrakibulhasan\ApiProgressTracker\Models\ApiptApiProgress::setConnectionName('apipt');
-        \Gmrakibulhasan\ApiProgressTracker\Models\ApiptTask::setConnectionName('apipt');
-        \Gmrakibulhasan\ApiProgressTracker\Models\ApiptComment::setConnectionName('apipt');
     }
 }
