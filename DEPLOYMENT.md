@@ -18,19 +18,20 @@ composer require gmrakibulhasan/api-progress-tracker:^1.0
 
 ```json
 {
-    "repositories": [
-        {
-            "type": "vcs",
-            "url": "https://github.com/gmrakibulhasan/api-progress-tracker"
-        }
-    ],
-    "require": {
-        "gmrakibulhasan/api-progress-tracker": "^1.0"
+  "repositories": [
+    {
+      "type": "vcs",
+      "url": "https://github.com/gmrakibulhasan/api-progress-tracker"
     }
+  ],
+  "require": {
+    "gmrakibulhasan/api-progress-tracker": "^1.0"
+  }
 }
 ```
 
 2. Then run:
+
 ```bash
 composer update
 ```
