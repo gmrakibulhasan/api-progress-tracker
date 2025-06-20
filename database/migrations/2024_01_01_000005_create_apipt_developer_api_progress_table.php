@@ -18,7 +18,7 @@ return new class extends Migration
 
             // Unique constraint to prevent duplicate assignments
             $table->unique(['developer_id', 'api_progress_id']);
-            
+
             // Add indexes for better performance
             $table->index('assigned_by');
             $table->index('viewed_at');

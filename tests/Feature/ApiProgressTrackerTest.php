@@ -116,7 +116,7 @@ class ApiProgressTrackerTest extends TestCase
     public function it_can_access_dashboard_route()
     {
         $response = $this->get('/api-progress');
-        
+
         $response->assertStatus(200);
         $response->assertSee('API Progress Tracker');
     }

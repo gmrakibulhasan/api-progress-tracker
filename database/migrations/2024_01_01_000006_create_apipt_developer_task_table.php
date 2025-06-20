@@ -17,7 +17,7 @@ return new class extends Migration
 
             // Unique constraint to prevent duplicate assignments
             $table->unique(['developer_id', 'task_id']);
-            
+
             // Add indexes for better performance
             $table->index('viewed_at');
         });

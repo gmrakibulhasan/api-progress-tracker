@@ -27,7 +27,7 @@ class ApiProgressController
         if ($request->has('search')) {
             $search = $request->get('search');
             $query->where('name', 'like', "%{$search}%")
-                  ->orWhere('email', 'like', "%{$search}%");
+                ->orWhere('email', 'like', "%{$search}%");
         }
 
         $developers = $query->latest()->paginate(15);
@@ -117,8 +117,8 @@ class ApiProgressController
             $search = $request->get('search');
             $query->where(function ($q) use ($search) {
                 $q->where('endpoint', 'like', "%{$search}%")
-                  ->orWhere('description', 'like', "%{$search}%")
-                  ->orWhere('group_name', 'like', "%{$search}%");
+                    ->orWhere('description', 'like', "%{$search}%")
+                    ->orWhere('group_name', 'like', "%{$search}%");
             });
         }
 
@@ -204,7 +204,7 @@ class ApiProgressController
             $search = $request->get('search');
             $query->where(function ($q) use ($search) {
                 $q->where('title', 'like', "%{$search}%")
-                  ->orWhere('description', 'like', "%{$search}%");
+                    ->orWhere('description', 'like', "%{$search}%");
             });
         }
 
@@ -269,12 +269,12 @@ class ApiProgressController
     // Comment Management
     public function getComments(Request $request, $type, $id): JsonResponse
     {
-        $modelClass = $type === 'api-progress' 
-            ? ApiptApiProgress::class 
+        $modelClass = $type === 'api-progress'
+            ? ApiptApiProgress::class
             : ApiptTask::class;
 
         $model = $modelClass::findOrFail($id);
-        
+
         $comments = $model->comments()
             ->with(['developer', 'replies.developer'])
             ->whereNull('parent_id')

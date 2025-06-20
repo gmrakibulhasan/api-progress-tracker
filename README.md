@@ -52,12 +52,14 @@ CREATE DATABASE api_progress_tracker;
 ### 4. Run Installation
 
 **Option A: Quick Install**
+
 ```bash
 chmod +x vendor/gmrakibulhasan/api-progress-tracker/install.sh
 ./vendor/gmrakibulhasan/api-progress-tracker/install.sh
 ```
 
 **Option B: Manual Install**
+
 ```bash
 # Publish configuration
 php artisan vendor:publish --provider="Gmrakibulhasan\ApiProgressTracker\ApiProgressTrackerServiceProvider"
@@ -75,15 +77,18 @@ php artisan db:seed --class="Gmrakibulhasan\ApiProgressTracker\Database\Seeders\
 ## 🎯 Usage
 
 ### Access Dashboard
+
 Visit: `http://yourapp.com/api-progress`
 
 **Default Admin Login:**
+
 - Email: `admin@apipt.com`
 - Password: `password`
 
 ### Available Commands
 
 #### Sync API Routes
+
 ```bash
 # Sync all API routes
 php artisan api-progress:sync-routes
@@ -94,6 +99,7 @@ php artisan api-progress:sync-routes --group=users
 # Force sync (update existing)
 php artisan api-progress:sync-routes --force
 ```
+
 - Beautiful Livewire-powered interface
 - Automatic route discovery and tracking
 
@@ -117,6 +123,7 @@ Visit `/api-progress` in your browser to access the dashboard.
 ### Commands
 
 Sync API routes:
+
 ```bash
 php artisan api-progress:sync-routes
 ```

@@ -27,7 +27,7 @@ class SyncApiRoutesCommand extends Command
 
         foreach ($routes as $route) {
             $routeData = $this->extractRouteData($route);
-            
+
             if ($this->shouldSyncRoute($routeData)) {
                 $existing = ApiptApiProgress::where('method', $routeData['method'])
                     ->where('endpoint', $routeData['endpoint'])
@@ -61,11 +61,11 @@ class SyncApiRoutesCommand extends Command
         $routes = collect(RouteFacade::getRoutes())->filter(function (Route $route) {
             $uri = $route->uri();
             $methods = $route->methods();
-            
+
             // Filter API routes (starting with 'api/' or containing 'api')
-            $isApiRoute = str_starts_with($uri, 'api/') || 
-                         str_contains($uri, '/api/') ||
-                         str_contains($route->getName() ?? '', 'api.');
+            $isApiRoute = str_starts_with($uri, 'api/') ||
+                str_contains($uri, '/api/') ||
+                str_contains($route->getName() ?? '', 'api.');
 
             // Check if route has valid HTTP methods
             $hasValidMethod = !empty(array_intersect($methods, $this->methods));
@@ -104,7 +104,7 @@ class SyncApiRoutesCommand extends Command
     protected function getRouteGroup(Route $route): ?string
     {
         $action = $route->getAction();
-        
+
         // Try to get group from middleware
         if (isset($action['middleware'])) {
             $middleware = is_array($action['middleware']) ? $action['middleware'] : [$action['middleware']];
@@ -132,7 +132,7 @@ class SyncApiRoutesCommand extends Command
         // Extract from URI structure
         $uri = $route->uri();
         $segments = explode('/', trim($uri, '/'));
-        
+
         if (count($segments) >= 2 && $segments[0] === 'api') {
             return ucfirst($segments[1]);
         }
@@ -143,7 +143,7 @@ class SyncApiRoutesCommand extends Command
     protected function getRouteDescription(Route $route): ?string
     {
         $action = $route->getAction();
-        
+
         // Try to get from route name
         if ($name = $route->getName()) {
             return ucwords(str_replace(['.', '_', '-'], ' ', $name));
@@ -167,7 +167,7 @@ class SyncApiRoutesCommand extends Command
     {
         // Skip if endpoint is too generic or contains parameters only
         $endpoint = $routeData['endpoint'];
-        
+
         if ($endpoint === '/' || $endpoint === '/api' || $endpoint === '/api/') {
             return false;
         }

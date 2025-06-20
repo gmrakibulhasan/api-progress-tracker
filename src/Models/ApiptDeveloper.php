@@ -13,7 +13,7 @@ class ApiptDeveloper extends Authenticatable
     use Notifiable;
 
     protected $table = 'apipt_developers';
-    
+
     protected $fillable = [
         'name',
         'email',

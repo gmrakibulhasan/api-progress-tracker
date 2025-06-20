@@ -60,14 +60,14 @@ class ApiptComment extends Model
     public function markMentionAsSeen($developerId)
     {
         $mentions = $this->mentions ?? [];
-        
+
         foreach ($mentions as &$mention) {
             if ($mention['id'] == $developerId) {
                 $mention['seen_at'] = now()->toDateTimeString();
                 break;
             }
         }
-        
+
         $this->update(['mentions' => $mentions]);
     }
 
@@ -75,13 +75,13 @@ class ApiptComment extends Model
     public function hasUnseenMention($developerId)
     {
         $mentions = $this->mentions ?? [];
-        
+
         foreach ($mentions as $mention) {
             if ($mention['id'] == $developerId && is_null($mention['seen_at'] ?? null)) {
                 return true;
             }
         }
-        
+
         return false;
     }
 }

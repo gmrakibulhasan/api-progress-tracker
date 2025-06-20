@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:noNamespaceSchemaLocation="./vendor/phpunit/phpunit/phpunit.xsd"
-         bootstrap="vendor/autoload.php"
-         colors="true">
+    xsi:noNamespaceSchemaLocation="./vendor/phpunit/phpunit/phpunit.xsd"
+    bootstrap="vendor/autoload.php"
+    colors="true">
     <testsuites>
         <testsuite name="Package Test Suite">
             <directory suffix="Test.php">./tests</directory>
@@ -14,8 +14,8 @@
         </include>
     </coverage>
     <php>
-        <env name="DB_CONNECTION" value="testing"/>
-        <env name="DB_DATABASE" value=":memory:"/>
-        <env name="APP_KEY" value="base64:2fl+Ktvkfl+Fuz4Qp/A75G2RTiWVA/ZoKX87PBqktE="/>
+        <env name="DB_CONNECTION" value="testing" />
+        <env name="DB_DATABASE" value=":memory:" />
+        <env name="APP_KEY" value="base64:2fl+Ktvkfl+Fuz4Qp/A75G2RTiWVA/ZoKX87PBqktE=" />
     </php>
 </phpunit>

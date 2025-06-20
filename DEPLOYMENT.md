@@ -70,11 +70,13 @@ Visit: `http://yourapp.com/api-progress`
 ### Commands
 
 #### Sync API Routes
+
 ```bash
 php artisan api-progress:sync-routes
 ```
 
 #### Sync with filters
+
 ```bash
 php artisan api-progress:sync-routes --group=users
 php artisan api-progress:sync-routes --force
@@ -121,29 +123,34 @@ The package uses a separate database connection to prevent data loss during `php
 ## Features
 
 ### 1. API Progress Tracking
+
 - Automatic route discovery and tracking
 - Status management (todo, in_progress, issue, not_needed, complete)
 - Priority levels (low, normal, high, urgent)
 - Group-based organization
 
 ### 2. Task Management
+
 - Create and assign tasks to developers
 - Track progress and completion
 - Priority and status management
 - Comment system for collaboration
 
 ### 3. Developer Management
+
 - Add team members
 - Assign tasks and API endpoints
 - Track activity and progress
 
 ### 4. Comment System
+
 - Add comments to API endpoints and tasks
 - File attachments support
 - Mention system with notifications
 - Threaded replies
 
 ### 5. Dashboard & Analytics
+
 - Visual progress tracking
 - Statistics and charts
 - Recent activity feed
@@ -152,6 +159,7 @@ The package uses a separate database connection to prevent data loss during `php
 ## Data Persistence
 
 The package uses a separate database connection to ensure data persists across:
+
 - `php artisan migrate:fresh`
 - `php artisan migrate:rollback`
 - Main application database changes
@@ -161,6 +169,7 @@ The package uses a separate database connection to ensure data persists across:
 ### Views
 
 Publish and customize views:
+
 ```bash
 php artisan vendor:publish --provider="Gmrakibulhasan\ApiProgressTracker\ApiProgressTrackerServiceProvider" --tag="views"
 ```
@@ -203,6 +212,7 @@ The package uses prefixed routes (`/api-progress`) to avoid conflicts. If you ne
 ### Migration Issues
 
 If you get migration errors:
+
 ```bash
 # Clear cache
 php artisan config:clear
@@ -215,6 +225,7 @@ php artisan migrate
 ### File Upload Issues
 
 Check storage permissions:
+
 ```bash
 chmod -R 775 storage/
 chown -R www-data:www-data storage/
@@ -230,6 +241,7 @@ chown -R www-data:www-data storage/
 ## Support
 
 For issues and questions:
+
 - GitHub: https://github.com/gmrakibulhasan/api-progress-tracker
 - Email: gmrakibul.17@gmail.com
 
