@@ -38,6 +38,7 @@ class ApiProgressTrackerServiceProvider extends ServiceProvider
                 SyncApiRoutesCommand::class,
                 \Gmrakibulhasan\ApiProgressTracker\Commands\MigrateApiProgressCommand::class,
                 \Gmrakibulhasan\ApiProgressTracker\Commands\ValidateInstallationCommand::class,
+                \Gmrakibulhasan\ApiProgressTracker\Commands\TestDatabaseConnectionCommand::class,
             ]);
 
             // Publish config
@@ -82,7 +83,8 @@ class ApiProgressTrackerServiceProvider extends ServiceProvider
     {
         $config = config('api-progress-tracker.database');
 
-        config(['database.connections.apipt' => [
+        // Ensure we have the proper MySQL configuration
+        $databaseConfig = [
             'driver' => $config['connection'],
             'host' => $config['host'],
             'port' => $config['port'],
@@ -94,6 +96,15 @@ class ApiProgressTrackerServiceProvider extends ServiceProvider
             'prefix' => '',
             'strict' => true,
             'engine' => null,
-        ]]);
+        ];
+
+        // Add MySQL specific options
+        if ($config['connection'] === 'mysql') {
+            $databaseConfig['options'] = [
+                \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
+            ];
+        }
+
+        config(['database.connections.apipt' => $databaseConfig]);
     }
 }
