@@ -61,9 +61,10 @@ class ApiProgressTrackerServiceProvider extends ServiceProvider
     private function registerLivewireComponents()
     {
         Livewire::component('apipt-dashboard', \Gmrakibulhasan\ApiProgressTracker\Livewire\Dashboard::class);
-        Livewire::component('apipt-developer-management', \Gmrakibulhasan\ApiProgressTracker\Livewire\DeveloperManagement::class);
-        Livewire::component('apipt-api-progress', \Gmrakibulhasan\ApiProgressTracker\Livewire\ApiProgressManagement::class);
-        Livewire::component('apipt-task-management', \Gmrakibulhasan\ApiProgressTracker\Livewire\TaskManagement::class);
-        Livewire::component('apipt-comment-system', \Gmrakibulhasan\ApiProgressTracker\Livewire\CommentSystem::class);
+        // Other components will be registered when they are created
+        // Livewire::component('apipt-developer-management', \Gmrakibulhasan\ApiProgressTracker\Livewire\DeveloperManagement::class);
+        // Livewire::component('apipt-api-progress', \Gmrakibulhasan\ApiProgressTracker\Livewire\ApiProgressManagement::class);
+        // Livewire::component('apipt-task-management', \Gmrakibulhasan\ApiProgressTracker\Livewire\TaskManagement::class);
+        // Livewire::component('apipt-comment-system', \Gmrakibulhasan\ApiProgressTracker\Livewire\CommentSystem::class);
     }
 }
