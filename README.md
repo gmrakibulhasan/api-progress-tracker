@@ -142,46 +142,107 @@ php artisan api-progress:sync-routes --group=users
 php artisan api-progress:sync-routes --force
 ```
 
-- Beautiful Livewire-powered interface
-- Automatic route discovery and tracking
-
-## Installation
+#### Validate Installation
 
 ```bash
-composer require gmrakibulhasan/api-progress-tracker
+# Check if everything is working correctly
+php artisan api-progress:validate
 ```
 
-Publish and run migrations:
+This command will check:
+
+- Database connection
+- Table existence
+- Model functionality
+- Configuration
+- Route registration
+
+## 🎨 Features in Detail
+
+### Dashboard
+
+- Real-time progress tracking
+- Visual analytics and charts
+- API endpoint management
+- Task assignment and tracking
+- Comment system with file attachments
+
+### API Management
+
+- Automatic route discovery
+- Manual API endpoint creation
+- Priority and status tracking
+- Developer assignment
+- Progress monitoring
+
+### Task Management
+
+- Create and assign tasks
+- Track completion status
+- Comment system for collaboration
+- File attachment support
+- Mention system for notifications
+
+## 🔧 Configuration
+
+All configuration options are available in the published config file:
 
 ```bash
-php artisan vendor:publish --provider="Gmrakibulhasan\ApiProgressTracker\ApiProgressTrackerServiceProvider"
-php artisan migrate
+php artisan vendor:publish --provider="Gmrakibulhasan\ApiProgressTracker\ApiProgressTrackerServiceProvider" --tag="config"
 ```
 
-## Usage
+## 🤝 Contributing
 
-Visit `/api-progress` in your browser to access the dashboard.
+Contributions are welcome! Please feel free to submit a Pull Request.
 
-### Commands
+## 📝 Changelog
 
-Sync API routes:
+### v1.0.5
+
+- Cleaned up README documentation
+- Final package optimization and documentation improvements
+- Enhanced installation validation and error handling
+
+### v1.0.4
+
+- Added separate database connection support
+- Improved installation process with validation
+- Enhanced error handling and user guidance
+- Added comprehensive installation validation
+
+### v1.0.3
+
+- Fixed migration and seeding issues
+- Added custom migration commands
+- Improved package stability
+
+## 🐛 Troubleshooting
+
+### Database Connection Issues
+
+1. Ensure the database exists:
+
+   ```sql
+   CREATE DATABASE api_progress_tracker;
+   ```
+
+2. Check your `.env` configuration
+3. Run the validation command:
+   ```bash
+   php artisan api-progress:validate
+   ```
+
+### Migration Issues
+
+If migrations fail, try:
 
 ```bash
-php artisan api-progress:sync-routes
+php artisan api-progress:migrate --fresh --seed
 ```
 
-## Configuration
+## 📧 Support
 
-The package uses a separate database connection to prevent data loss during migrations. Configure your `.env`:
-
-```env
-APIPT_DB_CONNECTION=sqlite
-#APIPT_DB_HOST=127.0.0.1
-#APIPT_DB_PORT=3306
-#APIPT_DB_DATABASE=api_progress_tracker
-#APIPT_DB_USERNAME=root
-#APIPT_DB_PASSWORD=
-```
+For support, please open an issue on [GitHub](https://github.com/gmrakibulhasan/api-progress-tracker).
 
 ## License
 
