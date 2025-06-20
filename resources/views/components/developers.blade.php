@@ -88,75 +88,85 @@
             Add Developer
         </button>
     </div>
-</div>
 
-<!-- Add/Edit Developer Modal -->
-<div x-show="showModal" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0"
-    x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-200"
-    x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"
-    class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50" style="display: none;">
+    <!-- Add/Edit Developer Modal -->
+    <div x-show="showModal" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0"
+        x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-200"
+        x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"
+        class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4"
+        @click.self="closeModal()">
 
-    <div class="relative top-20 mx-auto p-5 border w-11/12 md:w-3/4 lg:w-1/2 xl:w-1/3 shadow-lg rounded-md bg-white">
-        <div class="mt-3">
-            <!-- Modal Header -->
-            <div class="flex items-center justify-between pb-4 border-b">
-                <h3 class="text-lg font-medium text-gray-900"
-                    x-text="editingDeveloper ? 'Edit Developer' : 'Add Developer'"></h3>
-                <button @click="closeModal()" class="text-gray-400 hover:text-gray-600">
-                    <i class="fas fa-times"></i>
-                </button>
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-md transform transition-all"
+            x-transition:enter="transition ease-out duration-300"
+            x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+            x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100"
+            x-transition:leave="transition ease-in duration-200"
+            x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100"
+            x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95" @click.stop>
+
+            <!-- Modal Content -->
+            <div class="p-6">
+                <!-- Modal Header -->
+                <div class="flex items-center justify-between pb-4 mb-4 border-b">
+                    <h3 class="text-lg font-semibold text-gray-900"
+                        x-text="editingDeveloper ? 'Edit Developer' : 'Add Developer'"></h3>
+                    <button @click="closeModal()" class="text-gray-400 hover:text-gray-600 transition-colors">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
+
+                <!-- Modal Body -->
+                <form @submit.prevent="saveDeveloper()" class="space-y-4">
+                    <div>
+                        <label for="dev-name" class="block text-sm font-medium text-gray-700 mb-2">Name</label>
+                        <input type="text" id="dev-name" x-model="form.name" required
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+
+                    <div>
+                        <label for="dev-email" class="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                        <input type="email" id="dev-email" x-model="form.email" required
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+
+                    <div>
+                        <label for="dev-password" class="block text-sm font-medium text-gray-700 mb-2">
+                            Password <span x-show="editingDeveloper" class="text-gray-500">(leave empty to keep
+                                current)</span>
+                        </label>
+                        <input type="password" id="dev-password" x-model="form.password"
+                            :required="!editingDeveloper"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+
+                    <!-- Error Messages -->
+                    <div x-show="errors.length > 0" class="bg-red-50 border border-red-200 rounded-lg p-3">
+                        <template x-for="error in errors" :key="error">
+                            <p class="text-red-700 text-sm" x-text="error"></p>
+                        </template>
+                    </div>
+
+                    <!-- Modal Footer -->
+                    <div class="flex justify-end space-x-3 pt-4 mt-6 border-t">
+                        <button type="button" @click="closeModal()"
+                            class="px-4 py-2 text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors">
+                            Cancel
+                        </button>
+                        <button type="submit" :disabled="saving"
+                            class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg disabled:opacity-50 transition-colors">
+                            <span x-show="!saving" x-text="editingDeveloper ? 'Update' : 'Create'"></span>
+                            <span x-show="saving">Saving...</span>
+                        </button>
+                    </div>
+                </form>
             </div>
-
-            <!-- Modal Body -->
-            <form @submit.prevent="saveDeveloper()" class="mt-6 space-y-4">
-                <div>
-                    <label for="name" class="block text-sm font-medium text-gray-700 mb-2">Name</label>
-                    <input type="text" id="name" x-model="form.name" required
-                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                </div>
-
-                <div>
-                    <label for="email" class="block text-sm font-medium text-gray-700 mb-2">Email</label>
-                    <input type="email" id="email" x-model="form.email" required
-                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                </div>
-
-                <div>
-                    <label for="password" class="block text-sm font-medium text-gray-700 mb-2">
-                        Password <span x-show="editingDeveloper" class="text-gray-500">(leave empty to keep
-                            current)</span>
-                    </label>
-                    <input type="password" id="password" x-model="form.password" :required="!editingDeveloper"
-                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                </div>
-
-                <!-- Error Messages -->
-                <div x-show="errors.length > 0" class="bg-red-50 border border-red-200 rounded-lg p-3">
-                    <template x-for="error in errors" :key="error">
-                        <p class="text-red-700 text-sm" x-text="error"></p>
-                    </template>
-                </div>
-
-                <!-- Modal Footer -->
-                <div class="flex justify-end space-x-3 pt-4 border-t">
-                    <button type="button" @click="closeModal()"
-                        class="px-4 py-2 text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg">
-                        Cancel
-                    </button>
-                    <button type="submit" :disabled="saving"
-                        class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg disabled:opacity-50">
-                        <span x-show="!saving" x-text="editingDeveloper ? 'Update' : 'Create'"></span>
-                        <span x-show="saving">Saving...</span>
-                    </button>
-                </div>
-            </form>
         </div>
     </div>
 </div>
-
 @push('scripts')
     <script>
         function developersData() {
+            console.log('developersData function called');
             return {
                 developers: [],
                 filteredDevelopers: [],
@@ -173,6 +183,7 @@
                 },
 
                 async init() {
+                    console.log('init() called');
                     await this.loadDevelopers();
                 },
 
@@ -206,6 +217,7 @@
                 },
 
                 openAddModal() {
+                    console.log('openAddModal() called');
                     this.editingDeveloper = null;
                     this.form = {
                         name: '',
@@ -214,6 +226,7 @@
                     };
                     this.errors = [];
                     this.showModal = true;
+                    console.log('showModal set to:', this.showModal);
                 },
 
                 editDeveloper(developer) {
@@ -244,8 +257,8 @@
 
                     try {
                         const url = this.editingDeveloper ?
-                            `{{ route('apipt.api.developers.store') }}`.replace('/developers',
-                                `/developers/${this.editingDeveloper.id}`) :
+                            '{{ route('apipt.api.developers.update', ':id') }}'.replace(':id', this.editingDeveloper
+                                .id) :
                             '{{ route('apipt.api.developers.store') }}';
 
                         const method = this.editingDeveloper ? 'PUT' : 'POST';
@@ -292,8 +305,8 @@
                     }
 
                     try {
-                        const response = await fetch(`{{ route('apipt.api.developers.store') }}`.replace('/developers',
-                            `/developers/${developer.id}`), {
+                        const response = await fetch('{{ route('apipt.api.developers.delete', ':id') }}'.replace(':id',
+                            developer.id), {
                             method: 'DELETE',
                             headers: {
                                 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute(
