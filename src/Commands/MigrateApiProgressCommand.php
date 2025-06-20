@@ -4,6 +4,7 @@ namespace Gmrakibulhasan\ApiProgressTracker\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\DB;
 
 class MigrateApiProgressCommand extends Command
 {
@@ -23,13 +24,24 @@ class MigrateApiProgressCommand extends Command
 
     /**
      * Execute the console command.
-     */
-    public function handle()
+     */    public function handle()
     {
         $this->info('Running API Progress Tracker migrations...');
 
-        // Get the package migration files
-        $migrationPath = __DIR__ . '/../../database/migrations';
+        // Check database connection first
+        try {
+            $connection = DB::connection('apipt');
+            $connection->getPdo();
+            $this->info('Database connection successful.');
+        } catch (\Exception $e) {
+            $this->error('Cannot connect to API Progress Tracker database.');
+            $this->error('Please ensure the database exists and connection settings are correct.');
+            $this->error('Connection error: ' . $e->getMessage());
+            return 1;
+        }
+
+        // Get the package migration files path relative to the project root
+        $migrationPath = 'vendor/gmrakibulhasan/api-progress-tracker/database/migrations';
 
         try {
             if ($this->option('fresh')) {
@@ -55,11 +67,11 @@ class MigrateApiProgressCommand extends Command
             // Run seeder if requested
             if ($this->option('seed')) {
                 $this->info('Seeding database...');
-                Artisan::call('db:seed', [
-                    '--database' => 'apipt',
-                    '--class' => 'Gmrakibulhasan\\ApiProgressTracker\\Database\\Seeders\\ApiProgressTrackerSeeder',
-                    '--force' => true,
-                ]);
+
+                // Use the seeder class directly
+                $seeder = new \Gmrakibulhasan\ApiProgressTracker\Database\Seeders\ApiProgressTrackerSeeder();
+                $seeder->run();
+
                 $this->info('Database seeded successfully!');
             }
         } catch (\Exception $e) {

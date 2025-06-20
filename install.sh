@@ -6,9 +6,15 @@ echo "Installing API Progress Tracker Package..."
 echo "Installing composer dependencies..."
 composer install
 
-# Create the database for the package (separate from main app)
+# Setup database (if MySQL is available)
 echo "Setting up database..."
-mysql -u root -p -e "CREATE DATABASE IF NOT EXISTS api_progress_tracker;"
+if command -v mysql &> /dev/null; then
+    mysql -u root -p -e "CREATE DATABASE IF NOT EXISTS api_progress_tracker;"
+    echo "Database created successfully!"
+else
+    echo "MySQL command not found. Please ensure the database exists:"
+    echo "CREATE DATABASE api_progress_tracker;"
+fi
 
 # Run migrations on separate database
 echo "Running migrations on separate database..."
@@ -20,7 +26,7 @@ php artisan vendor:publish --provider="Gmrakibulhasan\ApiProgressTracker\ApiProg
 php artisan vendor:publish --provider="Gmrakibulhasan\ApiProgressTracker\ApiProgressTrackerServiceProvider" --tag="views"
 php artisan vendor:publish --provider="Gmrakibulhasan\ApiProgressTracker\ApiProgressTrackerServiceProvider" --tag="assets"
 
-# Sync initial routes
+# Sync initial routes (after migrations complete)
 echo "Syncing API routes..."
 php artisan api-progress:sync-routes
 

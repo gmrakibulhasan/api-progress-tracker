@@ -45,9 +45,22 @@ APIPT_DB_PASSWORD=
 
 ### 3. Database Creation
 
+**Option A: Using MySQL CLI**
+
 ```sql
 CREATE DATABASE api_progress_tracker;
 ```
+
+**Option B: Using Laravel Tinker**
+
+```bash
+php artisan tinker
+DB::statement('CREATE DATABASE api_progress_tracker');
+exit
+```
+
+**Option C: Using Database Management Tool**
+Create a database named `api_progress_tracker` using phpMyAdmin, TablePlus, or your preferred tool.
 
 ### 4. Run Installation
 

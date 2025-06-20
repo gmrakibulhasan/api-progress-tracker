@@ -5,6 +5,7 @@ namespace Gmrakibulhasan\ApiProgressTracker\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Routing\Route;
 use Illuminate\Support\Facades\Route as RouteFacade;
+use Illuminate\Support\Facades\DB;
 use Gmrakibulhasan\ApiProgressTracker\Models\ApiptApiProgress;
 
 class SyncApiRoutesCommand extends Command
@@ -20,6 +21,15 @@ class SyncApiRoutesCommand extends Command
     public function handle()
     {
         $this->info('Starting API routes synchronization...');
+
+        // Check if the database tables exist
+        try {
+            DB::connection('apipt')->table('apipt_api_progress')->first();
+        } catch (\Exception $e) {
+            $this->error('API Progress Tracker database tables not found.');
+            $this->error('Please run: php artisan api-progress:migrate --fresh --seed');
+            return 1;
+        }
 
         $routes = $this->getApiRoutes();
         $syncedCount = 0;
