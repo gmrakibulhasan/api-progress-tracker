@@ -4,8 +4,33 @@
 
 ### Step 1: Install via Composer
 
+**Option A: From GitHub (Current)**
+```bash
+composer require gmrakibulhasan/api-progress-tracker:dev-main
+```
+
+**Option B: From Packagist (Coming Soon)**
 ```bash
 composer require gmrakibulhasan/api-progress-tracker
+```
+
+**Option C: Direct from GitHub Repository**
+```bash
+# Add to your composer.json
+{
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/gmrakibulhasan/api-progress-tracker"
+        }
+    ],
+    "require": {
+        "gmrakibulhasan/api-progress-tracker": "^1.0"
+    }
+}
+
+# Then run
+composer install
 ```
 
 ### Step 2: Environment Configuration
