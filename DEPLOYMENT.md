@@ -4,19 +4,19 @@
 
 ### Step 1: Install via Composer
 
-**Option A: From GitHub (Current)**
+**Option A: One-Command Installation (Recommended)**
+
 ```bash
-composer require gmrakibulhasan/api-progress-tracker:dev-main
+# In your Laravel project directory
+composer config repositories.api-progress-tracker vcs https://github.com/gmrakibulhasan/api-progress-tracker
+composer require gmrakibulhasan/api-progress-tracker:^1.0
 ```
 
-**Option B: From Packagist (Coming Soon)**
-```bash
-composer require gmrakibulhasan/api-progress-tracker
-```
+**Option B: Manual Repository Configuration**
 
-**Option C: Direct from GitHub Repository**
-```bash
-# Add to your composer.json
+1. Edit your project's `composer.json` file:
+
+```json
 {
     "repositories": [
         {
@@ -28,9 +28,24 @@ composer require gmrakibulhasan/api-progress-tracker
         "gmrakibulhasan/api-progress-tracker": "^1.0"
     }
 }
+```
 
-# Then run
-composer install
+2. Then run:
+```bash
+composer update
+```
+
+**Option C: Development Version**
+
+```bash
+composer config repositories.api-progress-tracker vcs https://github.com/gmrakibulhasan/api-progress-tracker
+composer require gmrakibulhasan/api-progress-tracker:dev-main
+```
+
+**Option D: From Packagist (Coming Soon)**
+
+```bash
+composer require gmrakibulhasan/api-progress-tracker
 ```
 
 ### Step 2: Environment Configuration
