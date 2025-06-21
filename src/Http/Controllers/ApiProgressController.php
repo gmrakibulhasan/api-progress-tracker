@@ -159,9 +159,18 @@ class ApiProgressController
             });
         }
 
-        $apiProgress = $query->latest()->paginate(15);
+        // Get all APIs sorted by creation date (oldest first)
+        $apiProgress = $query->oldest()->get();
 
-        return response()->json($apiProgress);
+        // Group by group_name for better organization
+        $groupedApis = $apiProgress->groupBy('group_name');
+
+        return response()->json([
+            'data' => $apiProgress,
+            'grouped' => $groupedApis,
+            'total' => $apiProgress->count(),
+            'groups' => $groupedApis->keys()
+        ]);
     }
 
     public function storeApiProgress(Request $request): JsonResponse

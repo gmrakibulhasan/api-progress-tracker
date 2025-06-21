@@ -12,6 +12,9 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
                         </svg>
                         Track and manage API development progress
+                        <span x-show="apis.length > 0" class="ml-4 px-2 py-1 bg-blue-100 text-blue-800 text-sm font-medium rounded-full">
+                            <span x-text="apis.length"></span> total APIs
+                        </span>
                     </p>
                 </div>
                 <div class="hidden sm:block">
@@ -77,7 +80,8 @@
                                 <h3 class="text-xl font-semibold text-gray-900" x-text="group.name"></h3>
                                 <p class="text-sm text-gray-500 mt-1">
                                     <span x-text="group.apis.length"></span> APIs • 
-                                    <span x-text="group.apis.filter(api => api.status === 'complete').length"></span> completed
+                                    <span x-text="group.apis.filter(api => api.status === 'complete').length"></span> completed •
+                                    <span x-text="group.apis.reduce((sum, api) => sum + (api.comments_count || 0), 0)"></span> comments
                                 </p>
                             </div>
                         </div>
@@ -162,13 +166,20 @@
                                             </svg>
                                         </div>
 
-                                        <!-- Enhanced Action Button -->
-                                        <button @click="showComments(api)" 
-                                            class="flex items-center justify-center w-10 h-10 text-blue-600 hover:text-blue-700 hover:bg-blue-50 rounded-lg transition-all duration-200 group">
-                                            <svg class="w-5 h-5 group-hover:scale-110 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
-                                            </svg>
-                                        </button>
+                                        <!-- Enhanced Action Button with Comment Count -->
+                                        <div class="flex items-center space-x-2">
+                                            <button @click="showComments(api)" 
+                                                class="flex items-center justify-center px-3 py-2 text-blue-600 hover:text-blue-700 hover:bg-blue-50 rounded-lg transition-all duration-200 group relative">
+                                                <svg class="w-5 h-5 group-hover:scale-110 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
+                                                </svg>
+                                                <span x-show="api.comments_count > 0" 
+                                                    class="ml-1 text-sm font-medium" 
+                                                    x-text="api.comments_count"></span>
+                                                <span x-show="api.comments_count === 0" 
+                                                    class="ml-1 text-sm text-gray-400">0</span>
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -405,6 +416,10 @@
                             this.apis = data.data;
                             this.filteredApis = [...this.apis];
                             this.groupApis();
+                            
+                            // Log to console for debugging
+                            console.log(`Loaded ${this.apis.length} APIs total`);
+                            console.log(`Groups found: ${data.groups ? data.groups.join(', ') : 'none'}`);
                         }
                     } catch (error) {
                         console.error('Error loading APIs:', error);
