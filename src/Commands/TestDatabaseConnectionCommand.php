@@ -38,7 +38,7 @@ class TestDatabaseConnectionCommand extends Command
             $this->line('');
             $this->line('Checking tables...');
             $tables = ['apipt_developers', 'apipt_api_progress', 'apipt_tasks', 'apipt_comments'];
-            
+
             foreach ($tables as $table) {
                 try {
                     $count = $connection->table($table)->count();
@@ -47,7 +47,6 @@ class TestDatabaseConnectionCommand extends Command
                     $this->error("✗ Table {$table} not found: " . $e->getMessage());
                 }
             }
-
         } catch (\Exception $e) {
             $this->error('✗ Database connection failed: ' . $e->getMessage());
             return 1;

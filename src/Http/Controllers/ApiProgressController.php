@@ -8,6 +8,7 @@ use Illuminate\View\View;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Log;
 use Gmrakibulhasan\ApiProgressTracker\Models\ApiptDeveloper;
 use Gmrakibulhasan\ApiProgressTracker\Models\ApiptApiProgress;
 use Gmrakibulhasan\ApiProgressTracker\Models\ApiptTask;
@@ -68,6 +69,10 @@ class ApiProgressController
 
     public function storeDeveloper(Request $request): JsonResponse
     {
+        // Debug: Check which database connection is being used
+        Log::info('ApiptDeveloper connection: ' . (new ApiptDeveloper())->getConnectionName());
+        Log::info('Database connections available: ' . json_encode(array_keys(config('database.connections'))));
+        
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:apipt_developers,email',

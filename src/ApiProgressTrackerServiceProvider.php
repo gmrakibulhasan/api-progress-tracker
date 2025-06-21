@@ -15,11 +15,15 @@ class ApiProgressTrackerServiceProvider extends ServiceProvider
             'api-progress-tracker'
         );
 
-        // Register separate database connection for the package
+        // Register separate database connection for the package EARLY
         $this->registerDatabaseConnection();
     }
+
     public function boot()
     {
+        // Ensure database connection is registered again in boot for web requests
+        $this->registerDatabaseConnection();
+
         // Register middleware
         $this->app['router']->aliasMiddleware('apipt.auth', \Gmrakibulhasan\ApiProgressTracker\Http\Middleware\ApiProgressAuthMiddleware::class);
 
@@ -81,7 +85,24 @@ class ApiProgressTrackerServiceProvider extends ServiceProvider
      */
     private function registerDatabaseConnection()
     {
+        // Skip if already registered
+        if (config('database.connections.apipt')) {
+            return;
+        }
+
         $config = config('api-progress-tracker.database');
+
+        // Fallback to environment variables if config is not available
+        if (!$config) {
+            $config = [
+                'connection' => env('APIPT_DB_CONNECTION', 'mysql'),
+                'host' => env('APIPT_DB_HOST', '127.0.0.1'),
+                'port' => env('APIPT_DB_PORT', '3306'),
+                'database' => env('APIPT_DB_DATABASE', 'api_progress_tracker'),
+                'username' => env('APIPT_DB_USERNAME', 'root'),
+                'password' => env('APIPT_DB_PASSWORD', ''),
+            ];
+        }
 
         // Ensure we have the proper MySQL configuration
         $databaseConfig = [
@@ -105,6 +126,10 @@ class ApiProgressTrackerServiceProvider extends ServiceProvider
             ];
         }
 
+        // Set the database connection configuration
+        $this->app['config']->set('database.connections.apipt', $databaseConfig);
+        
+        // Also set it using config() helper for immediate availability
         config(['database.connections.apipt' => $databaseConfig]);
     }
 }
