@@ -12,11 +12,6 @@
                 <i class="fas fa-sync mr-2"></i>
                 Sync Routes
             </button>
-            <button @click="openAddModal()"
-                class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center">
-                <i class="fas fa-plus mr-2"></i>
-                Add API
-            </button>
         </div>
     </div>
 
@@ -31,12 +26,14 @@
                 <option value="">All Statuses</option>
                 <option value="todo">Todo</option>
                 <option value="in_progress">In Progress</option>
+                <option value="issue">Issue</option>
+                <option value="not_needed">Not Needed</option>
                 <option value="complete">Complete</option>
             </select>
             <select x-model="priorityFilter" @change="filterApis()" class="px-3 py-2 border border-gray-300 rounded-lg">
                 <option value="">All Priorities</option>
                 <option value="low">Low</option>
-                <option value="medium">Medium</option>
+                <option value="normal">Normal</option>
                 <option value="high">High</option>
                 <option value="urgent">Urgent</option>
             </select>
@@ -82,6 +79,8 @@
                                     class="px-2 py-1 text-xs border border-gray-300 rounded">
                                     <option value="todo">Todo</option>
                                     <option value="in_progress">In Progress</option>
+                                    <option value="issue">Issue</option>
+                                    <option value="not_needed">Not Needed</option>
                                     <option value="complete">Complete</option>
                                 </select>
 
@@ -89,7 +88,7 @@
                                 <select x-model="api.priority" @change="updateApiPriority(api)"
                                     class="px-2 py-1 text-xs border border-gray-300 rounded">
                                     <option value="low">Low</option>
-                                    <option value="medium">Medium</option>
+                                    <option value="normal">Normal</option>
                                     <option value="high">High</option>
                                     <option value="urgent">Urgent</option>
                                 </select>
@@ -121,12 +120,9 @@
     <div x-show="!loading && apis.length === 0" class="text-center py-12">
         <i class="fas fa-code-branch text-gray-400 text-6xl mb-4"></i>
         <h3 class="text-lg font-medium text-gray-900 mb-2">No APIs found</h3>
-        <p class="text-gray-600 mb-4">Sync your routes or add APIs manually</p>
-        <button @click="syncRoutes()" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg mr-2">
+        <p class="text-gray-600 mb-4">Sync your routes to get started</p>
+        <button @click="syncRoutes()" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg">
             Sync Routes
-        </button>
-        <button @click="openAddModal()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg">
-            Add API
         </button>
     </div>
 </div>
@@ -226,8 +222,8 @@
 
                 async updateApiStatus(api) {
                     try {
-                        const response = await fetch(`{{ route('apipt.api.progress.store') }}`.replace('/api-progress',
-                            `/api-progress/${api.id}`), {
+                        const response = await fetch('{{ route('apipt.api.progress.update', ':id') }}'.replace(':id',
+                            api.id), {
                             method: 'PUT',
                             headers: {
                                 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute(
@@ -236,6 +232,12 @@
                                 'Content-Type': 'application/json'
                             },
                             body: JSON.stringify({
+                                method: api.method,
+                                endpoint: api.endpoint,
+                                group_name: api.group_name,
+                                description: api.description,
+                                priority: api.priority,
+                                estimated_completion_time: api.estimated_completion_time,
                                 status: api.status
                             })
                         });
@@ -243,16 +245,20 @@
                         const data = await response.json();
                         if (data.success) {
                             this.groupApis(); // Refresh progress calculations
+                            this.showNotification('API status updated successfully', 'success');
+                        } else {
+                            this.showNotification('Error updating API status', 'error');
                         }
                     } catch (error) {
                         console.error('Error updating API status:', error);
+                        this.showNotification('Error updating API status', 'error');
                     }
                 },
 
                 async updateApiPriority(api) {
                     try {
-                        const response = await fetch(`{{ route('apipt.api.progress.store') }}`.replace('/api-progress',
-                            `/api-progress/${api.id}`), {
+                        const response = await fetch('{{ route('apipt.api.progress.update', ':id') }}'.replace(':id',
+                            api.id), {
                             method: 'PUT',
                             headers: {
                                 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute(
@@ -261,16 +267,25 @@
                                 'Content-Type': 'application/json'
                             },
                             body: JSON.stringify({
-                                priority: api.priority
+                                method: api.method,
+                                endpoint: api.endpoint,
+                                group_name: api.group_name,
+                                description: api.description,
+                                priority: api.priority,
+                                estimated_completion_time: api.estimated_completion_time,
+                                status: api.status
                             })
                         });
 
                         const data = await response.json();
-                        if (!data.success) {
-                            console.error('Error updating API priority');
+                        if (data.success) {
+                            this.showNotification('API priority updated successfully', 'success');
+                        } else {
+                            this.showNotification('Error updating API priority', 'error');
                         }
                     } catch (error) {
                         console.error('Error updating API priority:', error);
+                        this.showNotification('Error updating API priority', 'error');
                     }
                 },
 
@@ -293,6 +308,46 @@
                     } catch (error) {
                         console.error('Error syncing routes:', error);
                         this.showNotification('Error syncing routes', 'error');
+                    }
+                },
+
+                showComments(api) {
+                    // TODO: Implement comments functionality
+                    this.showNotification('Comments functionality coming soon', 'info');
+                },
+
+                editApi(api) {
+                    // TODO: Implement edit API functionality
+                    this.showNotification('Edit API functionality coming soon', 'info');
+                },
+
+                async deleteApi(api) {
+                    if (!confirm(`Are you sure you want to delete ${api.method} ${api.endpoint}?`)) {
+                        return;
+                    }
+
+                    try {
+                        const response = await fetch('{{ route('apipt.api.progress.delete', ':id') }}'.replace(':id',
+                            api.id), {
+                            method: 'DELETE',
+                            headers: {
+                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute(
+                                    'content'),
+                                'Accept': 'application/json'
+                            }
+                        });
+
+                        const data = await response.json();
+
+                        if (data.success) {
+                            await this.loadApis();
+                            this.showNotification('API deleted successfully', 'success');
+                        } else {
+                            this.showNotification(data.message || 'Error deleting API', 'error');
+                        }
+                    } catch (error) {
+                        console.error('Error deleting API:', error);
+                        this.showNotification('Error deleting API', 'error');
                     }
                 },
 
