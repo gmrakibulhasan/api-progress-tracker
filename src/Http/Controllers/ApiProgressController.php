@@ -150,6 +150,12 @@ class ApiProgressController
             $query->where('group_name', $request->get('group'));
         }
 
+        if ($request->has('developer')) {
+            $query->whereHas('developers', function ($q) use ($request) {
+                $q->where('apipt_developers.id', $request->get('developer'));
+            });
+        }
+
         if ($request->has('search')) {
             $search = $request->get('search');
             $query->where(function ($q) use ($search) {

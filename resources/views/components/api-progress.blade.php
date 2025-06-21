@@ -1,6 +1,6 @@
 <!-- API Progress Management Component -->
 <div x-data="apiProgressData()" x-init="init()" class="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50/30">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="max-w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
 
         <!-- Header Section -->
         <div class="mb-8">
@@ -70,6 +70,13 @@
                         <option value="normal">🟡 Normal</option>
                         <option value="high">🟠 High</option>
                         <option value="urgent">🔴 Urgent</option>
+                    </select>
+                    <select x-model="developerFilter" @change="filterApis()"
+                        class="px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white/80 backdrop-blur-sm min-w-[140px]">
+                        <option value="">All Developers</option>
+                        <template x-for="developer in developers" :key="developer.id">
+                            <option :value="developer.id" x-text="`👤 ${developer.name}`"></option>
+                        </template>
                     </select>
                 </div>
             </div>
@@ -600,6 +607,7 @@
                 searchTerm: '',
                 statusFilter: '',
                 priorityFilter: '',
+                developerFilter: '',
                 expandedGroups: new Set(),
                 overallCompletion: null,
                 developers: [],
@@ -681,6 +689,12 @@
 
                     if (this.priorityFilter) {
                         filtered = filtered.filter(api => api.priority === this.priorityFilter);
+                    }
+
+                    if (this.developerFilter) {
+                        filtered = filtered.filter(api =>
+                            api.developers && api.developers.some(dev => dev.id == this.developerFilter)
+                        );
                     }
 
                     this.filteredApis = filtered;
@@ -1005,6 +1019,24 @@
                     this.estimatedCompletionTime = '';
                 },
 
+                // Helper function to format datetime for backend
+                formatDateTimeForBackend(dateTimeString) {
+                    if (!dateTimeString) return null;
+
+                    // Convert from datetime-local format (YYYY-MM-DDTHH:mm) to Y-m-d H:i:s format
+                    const date = new Date(dateTimeString);
+                    if (isNaN(date.getTime())) return null;
+
+                    const year = date.getFullYear();
+                    const month = String(date.getMonth() + 1).padStart(2, '0');
+                    const day = String(date.getDate()).padStart(2, '0');
+                    const hours = String(date.getHours()).padStart(2, '0');
+                    const minutes = String(date.getMinutes()).padStart(2, '0');
+                    const seconds = String(date.getSeconds()).padStart(2, '0');
+
+                    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+                },
+
                 async assignDevelopers() {
                     if (this.selectedDevelopers.length === 0 || !this.currentAssignApi) {
                         this.showNotification('Please select at least one developer', 'error');
@@ -1013,6 +1045,9 @@
 
                     this.assigningDevelopers = true;
                     try {
+                        // Format the estimated completion time properly
+                        const formattedDateTime = this.formatDateTimeForBackend(this.estimatedCompletionTime);
+
                         const response = await fetch(`{{ route('apipt.api.progress.assign-developers', ':id') }}`
                             .replace(':id', this.currentAssignApi.id), {
                                 method: 'POST',
@@ -1025,7 +1060,7 @@
                                 body: JSON.stringify({
                                     developer_ids: this.selectedDevelopers,
                                     assigned_by: {{ session('apipt_user_id') ?: 'null' }},
-                                    estimated_completion_time: this.estimatedCompletionTime || null
+                                    estimated_completion_time: formattedDateTime
                                 })
                             });
 
@@ -1036,7 +1071,13 @@
                             this.closeAssignModal();
                             this.showNotification('Developers assigned successfully', 'success');
                         } else {
-                            this.showNotification('Error assigning developers', 'error');
+                            // Handle validation errors
+                            if (data.errors && data.errors.estimated_completion_time) {
+                                this.showNotification(`Validation Error: ${data.errors.estimated_completion_time[0]}`,
+                                    'error');
+                            } else {
+                                this.showNotification(data.message || 'Error assigning developers', 'error');
+                            }
                         }
                     } catch (error) {
                         console.error('Error assigning developers:', error);
