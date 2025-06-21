@@ -21,6 +21,7 @@ class ApiptApiProgress extends Model
         'estimated_completion_time',
         'completion_time',
         'status',
+        'assigned_by',
     ];
 
     protected $casts = [

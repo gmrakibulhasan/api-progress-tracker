@@ -40,6 +40,11 @@ Route::prefix(config('api-progress-tracker.route.prefix', 'api-progress'))
                 Route::put('api-progress/{id}', [ApiProgressController::class, 'updateApiProgress'])->name('api.progress.update');
                 Route::delete('api-progress/{id}', [ApiProgressController::class, 'deleteApiProgress'])->name('api.progress.delete');
 
+                // Developer Assignment for API Progress
+                Route::post('api-progress/{id}/assign-developers', [ApiProgressController::class, 'assignDevelopers'])->name('api.progress.assign-developers');
+                Route::delete('api-progress/{id}/unassign-developer/{developerId}', [ApiProgressController::class, 'unassignDeveloper'])->name('api.progress.unassign-developer');
+                Route::put('api-progress/{id}/update-assignment/{developerId}', [ApiProgressController::class, 'updateAssignment'])->name('api.progress.update-assignment');
+
                 // Tasks
                 Route::get('tasks', [ApiProgressController::class, 'getTasks'])->name('api.tasks');
                 Route::post('tasks', [ApiProgressController::class, 'storeTask'])->name('api.tasks.store');

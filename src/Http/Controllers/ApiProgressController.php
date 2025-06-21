@@ -162,13 +162,20 @@ class ApiProgressController
         // Get all APIs sorted by creation date (oldest first)
         $apiProgress = $query->oldest()->get();
 
+        // Calculate overall completion percentage
+        $totalApis = $apiProgress->count();
+        $completedApis = $apiProgress->where('status', 'complete')->count();
+        $overallCompletion = $totalApis > 0 ? round(($completedApis / $totalApis) * 100, 1) : 0;
+
         // Group by group_name for better organization
         $groupedApis = $apiProgress->groupBy('group_name');
 
         return response()->json([
             'data' => $apiProgress,
             'grouped' => $groupedApis,
-            'total' => $apiProgress->count(),
+            'total' => $totalApis,
+            'completed' => $completedApis,
+            'completion_percentage' => $overallCompletion,
             'groups' => $groupedApis->keys()
         ]);
     }
@@ -225,6 +232,93 @@ class ApiProgressController
         return response()->json([
             'success' => true,
             'message' => 'API Progress deleted successfully'
+        ]);
+    }
+
+    // Developer Assignment for API Progress
+    public function assignDevelopers(Request $request, $id): JsonResponse
+    {
+        $apiProgress = ApiptApiProgress::findOrFail($id);
+
+        $request->validate([
+            'developer_ids' => 'required|array',
+            'developer_ids.*' => 'exists:apipt.apipt_developers,id',
+            'assigned_by' => 'required|exists:apipt.apipt_developers,id',
+            'estimated_completion_time' => 'nullable|date_format:Y-m-d H:i:s'
+        ]);
+
+        // Clear existing assignments
+        $apiProgress->developers()->detach();
+
+        // Assign new developers
+        $syncData = [];
+        foreach ($request->developer_ids as $developerId) {
+            $syncData[$developerId] = [
+                'assigned_by' => $request->assigned_by,
+                'viewed_at' => null,
+                'created_at' => now(),
+                'updated_at' => now()
+            ];
+        }
+
+        $apiProgress->developers()->sync($syncData);
+
+        // Update estimated completion time if provided
+        if ($request->filled('estimated_completion_time')) {
+            $apiProgress->update([
+                'estimated_completion_time' => $request->estimated_completion_time
+            ]);
+        }
+
+        // Load the updated API with developers
+        $apiProgress->load(['developers', 'assignedBy']);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Developers assigned successfully',
+            'data' => $apiProgress
+        ]);
+    }
+
+    public function unassignDeveloper(Request $request, $id, $developerId): JsonResponse
+    {
+        $apiProgress = ApiptApiProgress::findOrFail($id);
+
+        $apiProgress->developers()->detach($developerId);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Developer unassigned successfully'
+        ]);
+    }
+
+    public function updateAssignment(Request $request, $id, $developerId): JsonResponse
+    {
+        $apiProgress = ApiptApiProgress::findOrFail($id);
+
+        $request->validate([
+            'estimated_completion_time' => 'nullable|date_format:Y-m-d H:i:s',
+            'viewed_at' => 'nullable|date_format:Y-m-d H:i:s'
+        ]);
+
+        $updateData = [];
+        if ($request->filled('estimated_completion_time')) {
+            $updateData['estimated_completion_time'] = $request->estimated_completion_time;
+            // Also update the main API record
+            $apiProgress->update(['estimated_completion_time' => $request->estimated_completion_time]);
+        }
+
+        if ($request->filled('viewed_at')) {
+            $updateData['viewed_at'] = $request->viewed_at;
+        }
+
+        if (!empty($updateData)) {
+            $apiProgress->developers()->updateExistingPivot($developerId, $updateData);
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Assignment updated successfully'
         ]);
     }
 
