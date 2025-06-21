@@ -128,7 +128,7 @@ class ApiProgressTrackerServiceProvider extends ServiceProvider
 
         // Set the database connection configuration
         $this->app['config']->set('database.connections.apipt', $databaseConfig);
-        
+
         // Also set it using config() helper for immediate availability
         config(['database.connections.apipt' => $databaseConfig]);
     }

@@ -72,10 +72,10 @@ class ApiProgressController
         // Debug: Check which database connection is being used
         Log::info('ApiptDeveloper connection: ' . (new ApiptDeveloper())->getConnectionName());
         Log::info('Database connections available: ' . json_encode(array_keys(config('database.connections'))));
-        
+
         $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:apipt_developers,email',
+            'email' => 'required|email|unique:apipt.apipt_developers,email',
             'password' => 'required|string|min:6',
         ]);
 
@@ -98,7 +98,7 @@ class ApiProgressController
 
         $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:apipt_developers,email,' . $id,
+            'email' => 'required|email|unique:apipt.apipt_developers,email,' . $id,
             'password' => 'nullable|string|min:6',
         ]);
 
@@ -255,7 +255,7 @@ class ApiProgressController
         $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'assigned_by' => 'required|exists:apipt_developers,id',
+            'assigned_by' => 'required|exists:apipt.apipt_developers,id',
             'priority' => 'required|in:low,normal,high,urgent',
             'estimated_completion_time' => 'nullable|date',
             'status' => 'required|in:todo,in_progress,issue,not_needed,complete',
@@ -277,7 +277,7 @@ class ApiProgressController
         $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'assigned_by' => 'required|exists:apipt_developers,id',
+            'assigned_by' => 'required|exists:apipt.apipt_developers,id',
             'priority' => 'required|in:low,normal,high,urgent',
             'estimated_completion_time' => 'nullable|date',
             'status' => 'required|in:todo,in_progress,issue,not_needed,complete',
@@ -327,10 +327,10 @@ class ApiProgressController
             'description' => 'required|string',
             'attachments' => 'nullable|array',
             'mentions' => 'nullable|array',
-            'parent_id' => 'nullable|exists:apipt_comments,id',
+            'parent_id' => 'nullable|exists:apipt.apipt_comments,id',
             'commentable_type' => 'required|string',
             'commentable_id' => 'required|integer',
-            'developer_id' => 'required|exists:apipt_developers,id',
+            'developer_id' => 'required|exists:apipt.apipt_developers,id',
         ]);
 
         $comment = ApiptComment::create($request->all());
