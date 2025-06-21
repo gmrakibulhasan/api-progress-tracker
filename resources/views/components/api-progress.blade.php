@@ -1,7 +1,7 @@
 <!-- API Progress Management Component -->
 <div x-data="apiProgressData()" x-init="init()">
     <!-- Header -->
-    <div class="flex justify-between items-center mb-6">
+    {{-- <div class="flex justify-between items-center mb-6">
         <div>
             <h2 class="text-2xl font-bold text-gray-900">API Progress</h2>
             <p class="text-gray-600">Track and manage API development progress</p>
@@ -13,7 +13,7 @@
                 Sync Routes
             </button>
         </div>
-    </div>
+    </div> --}}
 
     <!-- Filters -->
     <div class="bg-white rounded-lg shadow-sm p-4 mb-6">
@@ -97,12 +97,12 @@
                                 <button @click="showComments(api)" class="text-blue-600 hover:text-blue-800 p-1">
                                     <i class="fas fa-comments"></i>
                                 </button>
-                                <button @click="editApi(api)" class="text-green-600 hover:text-green-800 p-1">
+                                {{-- <button @click="editApi(api)" class="text-green-600 hover:text-green-800 p-1">
                                     <i class="fas fa-edit"></i>
                                 </button>
                                 <button @click="deleteApi(api)" class="text-red-600 hover:text-red-800 p-1">
                                     <i class="fas fa-trash"></i>
-                                </button>
+                                </button> --}}
                             </div>
                         </div>
                     </template>
