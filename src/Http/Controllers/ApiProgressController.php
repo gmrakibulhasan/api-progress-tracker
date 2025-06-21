@@ -313,7 +313,9 @@ class ApiProgressController
         $model = $modelClass::findOrFail($id);
 
         $comments = $model->comments()
-            ->with(['developer', 'replies.developer'])
+            ->with(['developer', 'replies' => function ($query) {
+                $query->with('developer')->orderBy('created_at', 'asc');
+            }])
             ->whereNull('parent_id')
             ->latest()
             ->get();
